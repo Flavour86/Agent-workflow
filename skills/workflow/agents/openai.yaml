@@ -1,0 +1,7 @@
+interface:
+  display_name: "Workflow"
+  short_description: "Explicit shared feature workflow runner"
+  default_prompt: "Use $workflow to run the shared feature workflow for this repository."
+
+policy:
+  allow_implicit_invocation: false

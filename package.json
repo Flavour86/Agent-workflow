@@ -1,0 +1,22 @@
+{
+  "name": "agent-workflow",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install:skills": "node scripts/install.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Flavour86/Agent-workflow.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Flavour86/Agent-workflow/issues"
+  },
+  "homepage": "https://github.com/Flavour86/Agent-workflow#readme"
+}
