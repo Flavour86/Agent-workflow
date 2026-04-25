@@ -7,7 +7,7 @@ argument-hint: <description> --type <feature|bug|refactor|optimization>
 
 The user is invoking `/($)feature` with arguments: $ARGUMENTS
 
-Invoke the `workflow` skill, if it is not present, print `workflow skill is missing. Please add it to the agent.` and stop.
+Invoke the `wf-stages` skill, if it is not present, print `wf-stages skill is missing. Please add it to the agent.` and stop.
 
 Execute the intake flow:
 1. Parse `<description>` and `--type <t>` from `$ARGUMENTS`. If `--type` is
@@ -45,7 +45,7 @@ Execute the intake flow:
    ### Stages
 
    Each chunk progresses through stages. The ONLY allowed stages are the four
-   defined in `workflow` skill `stages` folder: **design**, **code**, **qa**, **integrate**.
+   defined in `wf-stages` skill `stages` folder: **design**, **code**, **qa**, **integrate**.
    (`bootstrap` and `promote` are special one-shot triggers, not per-chunk
    stages.) Do NOT invent new stage names. List only the stages that apply to
    each chunk; omit any that are not needed.

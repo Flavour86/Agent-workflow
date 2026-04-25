@@ -50,8 +50,7 @@ no longer used anywhere in the project (dead code). Delete unused code — do no
 flagged for "later".
 
 ## Steps
-1. Preflight: ensure you are on the chunk branch `wf/<feature>/<tree>/<NN>`
-   with a clean working tree, if it doesn't exist, create the chunk branch `wf/<feature>/<tree>/<NN>`.
+1. Preflight: ensure you are on the chunk branch `wf/<feature>/<tree>/<NN>`, if it doesn't exist, create the chunk branch `wf/<feature>/<tree>/<NN>`.
 2. Read the chunk section, including approved Design notes, from the tree
    file.
 3. Follow `test-driven-development` and `next-best-practices` skill for each acceptance criterion:
@@ -64,7 +63,7 @@ flagged for "later".
 4. Follow project basic Patterns or Rules from `CLAUDE.md` or `Agent.md` or `Gemini.md`.
 5. Apply unused code cleanup (see above).
 6. After all acceptance criteria pass and cleanup is done, run the gate checks below.
-7. Stop and print the handoff block regardless of gate outcome — wait for user
+7. Stop and print the handoff block with a passing gate — wait for user
    `/($)wf-advance` or `/($)wf-reject`.
 
 ## Gate checklist

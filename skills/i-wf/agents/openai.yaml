@@ -1,0 +1,7 @@
+interface:
+  display_name: "i-wf"
+  short_description: "Human-gated workflow for iterative feature delivery."
+  default_prompt: "Use $i-wf status to inspect the current workflow state."
+
+policy:
+  allow_implicit_invocation: false

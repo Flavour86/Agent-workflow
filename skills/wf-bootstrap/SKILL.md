@@ -7,7 +7,7 @@ argument-hint: "[<app-name>]"
 
 The user is invoking `/($)wf-bootstrap` with arguments: $ARGUMENTS
 
-Invoke the `workflow` skill. Read `bootstrap.md` in the `workflow` skill, if it is not present, print `workflow skill is missing. Please add it to the agent.` and stop.
+Invoke the `wf-stages` skill. Read `bootstrap.md` in the `wf-stages` skill, if it is not present, print `wf-stages skill is missing. Please add it to the agent.` and stop.
 and execute the Bootstrap stage exactly as documented there.
 
 Before starting:

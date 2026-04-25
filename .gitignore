@@ -4,3 +4,5 @@ node_modules/
 .vscode
 .idea
 .DS_Store
+i-wf-workspace
+test-app

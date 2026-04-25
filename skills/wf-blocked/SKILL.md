@@ -7,7 +7,7 @@ argument-hint: <reason> --type <feature|bug|refactor|optimization>
 
 The user is invoking `/($)wf-blocked` with arguments: $ARGUMENTS
 
-Invoke the `workflow` skill, if it is not present, print `workflow skill is missing. Please add it to the agent.` and stop.
+Invoke the `wf-stages` skill, if it is not present, print `wf-stages skill is missing. Please add it to the agent.` and stop.
 
 1. `$ARGUMENTS` is the blocking reason. If it is empty, ask the user.
 2. Determine the current chunk.

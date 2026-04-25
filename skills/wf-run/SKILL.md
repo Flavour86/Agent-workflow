@@ -7,7 +7,7 @@ argument-hint: <chunk-id> [-a]
 
 The user is invoking `/($)wf-run` with arguments: $ARGUMENTS
 
-Invoke the `workflow` skill, if it is not present, print `workflow skill is missing. Please add it to the agent.` and stop.
+Invoke the `wf-stages` skill, if it is not present, print `wf-stages skill is missing. Please add it to the agent.` and stop.
 
 1. Parse the chunk ID and optional `-a` flag from `$ARGUMENTS`. Chunk ID
    format: `<feature-id>/<tree>/<NN-slug>`.

@@ -1,0 +1,639 @@
+{
+  "skill_name": "i-wf",
+  "fixture_ref": "See LOOP_GUIDE.md Section 4 for fixture A-K definitions.",
+  "simulation_note": "When test-app not yet available, evals 38-43, 45, 47-49 use simulation mode: fixture pre-creates a stub package.json whose scripts echo 'PASS' or 'FAIL'; screenshot files are dummy PNGs; visual comparison results are stated in the prompt. The eval verifies the skill's WORKFLOW LOGIC (state transitions, file updates, git operations), not actual test/visual executi-on.", 
+  "evals": [
+
+    {
+      "id": 1,
+      "group": "A: Prerequisite enforcement",
+      "name": "unrecognised-subcommand",
+      "prompt": "/i-wf foo",
+      "fixture": "A",
+      "expectations": [
+        "Response contains 'Usage: /($)i-wf <subcommand>'",
+        "Response lists all 9 subcommands: init, feature, run, advance, block, reject, status, promote, bootstrap",
+        "No files are created or modified"
+      ]
+    },
+    {
+      "id": 2,
+      "group": "B: Init command",
+      "name": "init-creates-structure",
+      "prompt": "/i-wf init",
+      "fixture": "A",
+      "expectations": [
+        "docs/workflow/README.md is created and contains '# Workflow System'",
+        "docs/workflow/INDEX.md is created with an Active features table",
+        "docs/workflow/features/ directory exists with .gitkeep",
+        "docs/workflow/archive/ directory exists with .gitkeep",
+        "Git commit made with message containing 'chore(workflow): initialise docs/workflow'",
+        "Response contains 'docs/workflow/ ready.' and suggests /($)i-wf feature and /($)i-wf status"
+      ]
+    },
+    {
+      "id": 3,
+      "group": "A: Prerequisite enforcement",
+      "name": "prerequisite-status-before-init",
+      "prompt": "/i-wf status",
+      "fixture": "A",
+      "expectations": [
+        "Response contains 'Workflow not initialised'",
+        "Response instructs user to run '/($)i-wf init' first (uses /($)i-wf notation)",
+        "No files are created or modified"
+      ]
+    },
+    {
+      "id": 4,
+      "group": "C: Status command",
+      "name": "status-no-active-features",
+      "prompt": "/i-wf status",
+      "fixture": "B",
+      "expectations": [
+        "Response contains 'No active features'",
+        "Response suggests starting one with '/($)i-wf feature <description>'",
+        "No files are created or modified (read-only)"
+      ]
+    },
+    {
+      "id": 5,
+      "group": "D: Feature command",
+      "name": "feature-brainstorming-missing",
+      "prompt": "/i-wf feature \"Add user login page with email and password\" --type feature",
+      "fixture": "B",
+      "expectations": [
+        "Skill checks for superpowers:brainstorming before doing any other work",
+        "Hard stops with 'Required: superpowers:brainstorming'",
+        "No scaffold files created",
+        "Response instructs user to install superpowers:brainstorming first"
+      ]
+    },
+    {
+      "id": 6,
+      "group": "A: Prerequisite enforcement",
+      "name": "run-before-any-feature",
+      "prompt": "/i-wf run",
+      "fixture": "B",
+      "expectations": [
+        "Response contains 'No active feature'",
+        "Response suggests running '/($)i-wf feature <description>'",
+        "No files are created or modified"
+      ]
+    },
+    {
+      "id": 7,
+      "group": "F: Advance command",
+      "name": "advance-design-to-code",
+      "prompt": "/i-wf advance",
+      "fixture": "C",
+      "expectations": [
+        "docs/workflow/features/2026-04-24-login-page/INDEX.md shows chunk 01-login-form at Code stage",
+        "docs/workflow/features/2026-04-24-login-page/log.md contains 'Design -> Code' (or Design → Code) transition entry",
+        "Git commit made with message containing 'advance 2026-04-24-login-page/01-login-form to Code'",
+        "Response shows the stage transition and suggests /($)i-wf run"
+      ]
+    },
+    {
+      "id": 8,
+      "group": "G: Block command",
+      "name": "block-current-chunk",
+      "prompt": "/i-wf block",
+      "fixture": "C",
+      "fixture_detail": "Simulate user providing reason: 'Waiting for design system tokens to be finalized by the design team'.",
+      "expectations": [
+        "docs/workflow/features/2026-04-24-login-page/INDEX.md shows chunk 01-login-form at Blocked",
+        "Root docs/workflow/INDEX.md also shows Blocked status for this feature/chunk",
+        "docs/workflow/features/2026-04-24-login-page/log.md has BLOCKED entry with reason and previous stage",
+        "Git commit made with message containing 'block 2026-04-24-login-page/01-login-form'",
+        "Response confirms Blocked and mentions /($)i-wf run to resume"
+      ]
+    },
+    {
+      "id": 9,
+      "group": "H: Reject command",
+      "name": "reject-design-stage",
+      "prompt": "/i-wf reject \"Button sizes don't follow design system tokens\"",
+      "fixture": "C",
+      "expectations": [
+        "log.md has REJECTED entry at Design with the exact note about button sizes",
+        "INDEX.md chunk 01-login-form stage remains Design (not advanced)",
+        "Git commit made with message containing 'reject 2026-04-24-login-page/01-login-form'",
+        "Response confirms chunk stays at Design and redo is starting"
+      ]
+    },
+    {
+      "id": 10,
+      "group": "E: Run dispatching (deps)",
+      "name": "run-design-dep-missing",
+      "prompt": "/i-wf run",
+      "fixture": "C",
+      "fixture_detail": "Chunk at Pending; first stage is Design. ui-ux-pro-max NOT installed.",
+      "expectations": [
+        "Response contains 'Required: ui-ux-pro-max'",
+        "Response instructs to install it and re-run /($)i-wf run",
+        "No files created or modified",
+        "No new git commits"
+      ]
+    },
+    {
+      "id": 11,
+      "group": "C: Status command",
+      "name": "status-with-active-feature",
+      "prompt": "/i-wf status",
+      "fixture": "C",
+      "expectations": [
+        "Response shows 2026-04-24-login-page with chunk 01-login-form at Design",
+        "Response uses exact format: '<feature-id>    chunk <NN-slug>    <Stage>    <type>'",
+        "No files modified",
+        "Response does NOT include 'No active features'"
+      ]
+    },
+    {
+      "id": 12,
+      "group": "B: Init command",
+      "name": "init-already-initialised",
+      "prompt": "/i-wf init",
+      "fixture": "B",
+      "expectations": [
+        "Response contains 'docs/workflow/ already initialised' (or equivalent)",
+        "No new git commit is created",
+        "No existing files overwritten"
+      ]
+    },
+    {
+      "id": 13,
+      "group": "D: Feature command",
+      "name": "feature-type-missing",
+      "prompt": "/i-wf feature \"Add dark mode toggle\"",
+      "fixture": "B",
+      "expectations": [
+        "Skill asks user to specify type: feature | bug | refactor | optimization",
+        "No scaffold files created before user responds",
+        "Skill does NOT default to 'feature' silently"
+      ]
+    },
+    {
+      "id": 14,
+      "group": "D: Feature command",
+      "name": "feature-full-scaffold",
+      "prompt": "/i-wf feature \"Add user profile page\" --type feature",
+      "fixture": "B",
+      "fixture_detail": "Treat superpowers:brainstorming as available. Simulate user replying 'approve' after decomposition.",
+      "expectations": [
+        "superpowers:brainstorming is invoked before decomposition",
+        "Decomposition presented for user approval BEFORE any scaffold files",
+        "feature.md, INDEX.md, chunks.md, log.md created in docs/workflow/features/<feature-id>/",
+        "screenshots/.gitkeep exists",
+        "Root docs/workflow/INDEX.md updated with new feature row",
+        "Branch wf/<feature-id> created from main (not bug, so wf/ prefix)",
+        "preproduction branch exists (created from main if absent)",
+        "Git commit on preproduction containing 'chore(workflow): scaffold feature'",
+        "Response prints 'Feature <feature-id> scaffolded' and suggests /($)i-wf run"
+      ]
+    },
+    {
+      "id": 15,
+      "group": "C: Status command",
+      "name": "status-multiple-features",
+      "prompt": "/i-wf status",
+      "fixture": "E",
+      "expectations": [
+        "Response shows one line per active feature (both features appear)",
+        "Each line uses format: '<feature-id>    chunk <NN-slug>    <Stage>    <type>'",
+        "No files modified",
+        "Neither feature is omitted"
+      ]
+    },
+    {
+      "id": 16,
+      "group": "C: Status command",
+      "name": "status-with-feature-id-arg",
+      "prompt": "/i-wf status 2026-04-24-login-page",
+      "fixture": "C",
+      "expectations": [
+        "Response prints docs/workflow/features/2026-04-24-login-page/INDEX.md verbatim",
+        "Output is NOT reformatted or summarised",
+        "No files modified"
+      ]
+    },
+    {
+      "id": 17,
+      "group": "C: Status command",
+      "name": "status-archived-feature-id",
+      "prompt": "/i-wf status 2026-01-10-old-feature",
+      "fixture": "B",
+      "fixture_detail": "docs/workflow/archive/2026-Q1/2026-01-10-old-feature/INDEX.md exists.",
+      "expectations": [
+        "Response prints the archived feature's INDEX.md contents",
+        "Response notes archived status with '[ARCHIVED]' or equivalent",
+        "No files modified"
+      ]
+    },
+    {
+      "id": 18,
+      "group": "E: Run dispatching (deps)",
+      "name": "run-code-dep-missing",
+      "prompt": "/i-wf run",
+      "fixture": "C",
+      "fixture_detail": "Chunk at Code. superpowers:test-driven-development NOT installed.",
+      "expectations": [
+        "Response contains 'Required: superpowers:test-driven-development'",
+        "Response instructs to install and re-run /($)i-wf run",
+        "No source code files modified",
+        "No new git commits"
+      ]
+    },
+    {
+      "id": 19,
+      "group": "E: Run dispatching (deps)",
+      "name": "run-qa-dep-missing",
+      "prompt": "/i-wf run",
+      "fixture": "C",
+      "fixture_detail": "Chunk at QA. chrome-devtools MCP NOT available.",
+      "expectations": [
+        "Response contains 'Required: chrome-devtools'",
+        "Response instructs to install and re-run",
+        "No files modified, no new git commits"
+      ]
+    },
+    {
+      "id": 20,
+      "group": "E: Run dispatching (deps)",
+      "name": "run-integrate-dep-missing",
+      "prompt": "/i-wf run",
+      "fixture": "C",
+      "fixture_detail": "Chunk at Integrate. code-review skill NOT installed.",
+      "expectations": [
+        "Response contains 'Required: code-review'",
+        "Response instructs to install and re-run",
+        "No merge operations performed, no new git commits"
+      ]
+    },
+    {
+      "id": 21,
+      "group": "A: Prerequisite enforcement",
+      "name": "run-multi-feature-asks-which",
+      "prompt": "/i-wf run",
+      "fixture": "E",
+      "expectations": [
+        "Skill asks user which feature to run (does not guess)",
+        "No stage work performed before user responds",
+        "No files modified"
+      ]
+    },
+    {
+      "id": 22,
+      "group": "A: Prerequisite enforcement",
+      "name": "advance-no-chunk-in-progress",
+      "prompt": "/i-wf advance",
+      "fixture": "B",
+      "fixture_detail": "Feature exists but no chunk is in progress (all chunks Done or Blocked).",
+      "expectations": [
+        "Response contains 'No chunk in progress'",
+        "Response suggests checking /($)i-wf status",
+        "No files modified"
+      ]
+    },
+    {
+      "id": 23,
+      "group": "F: Advance command",
+      "name": "advance-last-stage-last-chunk",
+      "prompt": "/i-wf advance",
+      "fixture": "C",
+      "fixture_detail": "Single-chunk feature; chunk 01-login-form at Integrate (last declared stage); this is the last chunk.",
+      "expectations": [
+        "Feature INDEX.md shows chunk 01-login-form at Done",
+        "Root docs/workflow/INDEX.md shows feature stage Awaiting-Promote",
+        "log.md has Integrate -> Done transition entry",
+        "Git commit made with message containing 'advance'",
+        "Response suggests /($)i-wf promote (not /($)i-wf run)"
+      ]
+    },
+    {
+      "id": 24,
+      "group": "H: Reject command",
+      "name": "reject-qa-routes-to-code",
+      "prompt": "/i-wf reject \"Login button is misaligned on mobile\"",
+      "fixture": "C",
+      "fixture_detail": "Chunk at QA. QA rejection routes BACK TO CODE (not stays at QA).",
+      "expectations": [
+        "log.md has REJECTED entry at QA containing the misalignment note",
+        "INDEX.md chunk stage is set to Code (routed back, not stays at QA)",
+        "Git commit made with message containing 'reject 2026-04-24-login-page/01-login-form'",
+        "Response confirms chunk routed back to Code (not redoing QA)"
+      ]
+    },
+    {
+      "id": 25,
+      "group": "H: Reject command",
+      "name": "reject-empty-note",
+      "prompt": "/i-wf reject",
+      "fixture": "C",
+      "expectations": [
+        "Skill asks user for rejection reason before doing anything",
+        "No log entry created (waiting for reason)",
+        "No files modified, no git commit"
+      ]
+    },
+    {
+      "id": 26,
+      "group": "G: Block command",
+      "name": "block-with-feature-id-arg",
+      "prompt": "/i-wf block 2026-04-24-login-page",
+      "fixture": "C",
+      "expectations": [
+        "Skill resolves feature from feature-id argument (not from root INDEX.md lookup)",
+        "INDEX.md shows chunk 01-login-form at Blocked",
+        "Skill asks for or receives a blocking reason",
+        "Git commit made with message containing 'block 2026-04-24-login-page'"
+      ]
+    },
+    {
+      "id": 28,
+      "group": "I: Promote command",
+      "name": "promote-chunks-not-all-done",
+      "prompt": "/i-wf promote 2026-04-24-login-page",
+      "fixture": "C",
+      "fixture_detail": "Chunk 01-login-form at Design (not Done). deployment-status-check IS available.",
+      "expectations": [
+        "Hard stop: not all chunks are Done or Awaiting-Promote",
+        "Response lists the incomplete chunks",
+        "No merge operations performed",
+        "No files modified"
+      ]
+    },
+    {
+      "id": 29,
+      "group": "I: Promote command",
+      "name": "promote-missing-feature-id",
+      "prompt": "/i-wf promote",
+      "fixture": "D",
+      "expectations": [
+        "Response shows error: feature-id is required",
+        "Response suggests: /($)i-wf promote <feature-id>",
+        "No git operations performed"
+      ]
+    },
+    {
+      "id": 32,
+      "group": "K: Handoff block",
+      "name": "handoff-block-format-all-passing",
+      "prompt": "Simulate /i-wf run where Design stage completes successfully with all gate checks passing.",
+      "fixture": "G",
+      "fixture_detail": "Use simulation: claim all design gate checks pass, screenshot saved, design notes written. Goal is to verify handoff block format.",
+      "expectations": [
+        "Handoff starts with '===== WORKFLOW HANDOFF =====' and ends with '============================'",
+        "Handoff includes Feature, Chunk, Stage fields with exact IDs from INDEX.md",
+        "All Gate check items are [x] — no [ ] items present",
+        "Next action section lists only valid commands for current state",
+        "Artifacts section lists every file produced (including screenshot path)"
+      ]
+    },
+    {
+      "id": 33,
+      "group": "K: Handoff block",
+      "name": "handoff-block-suppressed-on-gate-fail",
+      "prompt": "Simulate /i-wf run where Design stage completes BUT screenshot is missing.",
+      "fixture": "G",
+      "fixture_detail": "Simulate: design HTML created, but '[x] Annotated screenshot saved' would be [ ].",
+      "expectations": [
+        "No handoff block shown (no '===== WORKFLOW HANDOFF =====' in response)",
+        "Response is plain-text describing the failure",
+        "Skill retries internally (creates the screenshot) rather than asking user"
+      ]
+    },
+
+    {
+      "id": 35,
+      "group": "L: Auto-advance (-a)",
+      "name": "run-a-multi-stage-multi-chunk",
+      "prompt": "/i-wf run -a",
+      "fixture": "G",
+      "fixture_detail": "Feature with TWO chunks: 01-login-form (stages: design,code,qa,integrate) and 02-auth-api (stages: code,qa,integrate). Both at Pending. All required skills/tools available. Simulate every gate check as passing.",
+      "expectations": [
+        "Stage chain executes in order: 01 Design -> 01 Code -> 01 QA -> 01 Integrate -> 02 Code -> 02 QA -> 02 Integrate",
+        "After 01 Integrate, skill auto-moves to chunk 02 without user input",
+        "After 02 Integrate (last chunk), feature reaches Awaiting-Promote and STOPS",
+        "Skill does NOT auto-run /($)i-wf promote",
+        "log.md contains entries for every stage transition across both chunks",
+        "Git history shows merges: 01 chunk -> feature, 02 chunk -> feature, feature -> preproduction"
+      ]
+    },
+    {
+      "id": 36,
+      "group": "L: Auto-advance (-a)",
+      "name": "run-a-stops-on-gate-fail",
+      "prompt": "/i-wf run -a",
+      "fixture": "H",
+      "fixture_detail": "Chunk 01 at Code. Simulate: pnpm test FAILS during Code stage gate check.",
+      "expectations": [
+        "Skill stops at Code stage (does NOT advance to QA)",
+        "Plain-text failure message printed (no handoff block)",
+        "INDEX.md chunk remains at Code",
+        "log.md has the gate failure recorded",
+        "No git commit advancing the chunk"
+      ]
+    },
+    {
+      "id": 37,
+      "group": "L: Auto-advance (-a)",
+      "name": "run-a-stops-at-awaiting-promote",
+      "prompt": "/i-wf run -a",
+      "fixture": "K",
+      "fixture_detail": "Last chunk reaching Integrate-complete. After integrate, feature should hit Awaiting-Promote.",
+      "expectations": [
+        "Feature INDEX.md shows Awaiting-Promote after last chunk integrates",
+        "Skill stops — does NOT proceed to /($)i-wf promote",
+        "Response message tells user to run /($)i-wf promote <feature-id> manually",
+        "No merge to main has occurred"
+      ]
+    },
+
+    {
+      "id": 38,
+      "group": "M: Design Modes",
+      "name": "design-system-bootstrap",
+      "prompt": "Simulate /i-wf run dispatching Design stage for the very first feature in a brand-new app.",
+      "fixture": "F",
+      "fixture_detail": "test-app exists. NO docs/workflow/design/system/ folder yet. ui-ux-pro-max IS available. Chunk's first AC requires defining brand identity.",
+      "expectations": [
+        "docs/workflow/design/system/tokens.html created (one browser-displayable HTML file containing colors + typography + spacing + layout grid)",
+        "docs/workflow/design/system/overview.md created (the only .md file in design/)",
+        "NO other files in design/system/ (no separate colors.md, typography.md, spacing.md)",
+        "ui-ux-pro-max skill is invoked",
+        "Brand-new page mockup also created at docs/workflow/design/pages/<page>.html + <page>.css using the new tokens",
+        "Annotated screenshot saved to features/<id>/screenshots/",
+        "log.md has Design complete entry referencing system bootstrap"
+      ]
+    },
+    {
+      "id": 39,
+      "group": "M: Design Modes",
+      "name": "design-iterating-existing-page",
+      "prompt": "Simulate /i-wf run dispatching Design stage for a chunk that updates an existing page.",
+      "fixture": "G",
+      "fixture_detail": "design/pages/home.html exists with multiple sections. Chunk acceptance criteria touch ONLY the header section. Pre-design home.html is captured for diff comparison.",
+      "expectations": [
+        "docs/workflow/design/pages/home.html is modified, not rewritten from scratch",
+        "Only the header section differs from the pre-design version (other sections byte-identical)",
+        "Annotated screenshot saved highlighting ONLY the changed area",
+        "Design notes in chunks.md describe the header changes specifically",
+        "Existing design tokens used (no new tokens invented without flag)",
+        "log.md Design complete entry references the iteration"
+      ]
+    },
+
+    {
+      "id": 40,
+      "group": "N: Code Coverage",
+      "name": "code-covers-all-acceptance-criteria",
+      "prompt": "Simulate /i-wf run dispatching Code stage for chunk 01-login-form.",
+      "fixture": "H",
+      "fixture_detail": "chunks.md has 5 acceptance criteria (AC1-AC5). Simulate: skill writes code; verify each AC has at least one corresponding test/implementation file or commit.",
+      "expectations": [
+        "Every AC1-AC5 from features/<id>/INDEX.md or chunks.md has a corresponding implementation file or test file referenced",
+        "log.md Code-complete entry lists which file(s) cover each AC",
+        "If any AC has no implementation, gate check fails — handoff is NOT shown",
+        "Each AC is committed individually (one commit per criterion per TDD principle)"
+      ]
+    },
+    {
+      "id": 41,
+      "group": "N: Code Coverage",
+      "name": "code-covers-all-screenshot-sections",
+      "prompt": "Simulate /i-wf run dispatching Code stage. Verify every section in design screenshots is implemented.",
+      "fixture": "H",
+      "fixture_detail": "features/<id>/screenshots/ contains 01-login-form-header.png, 01-login-form-form.png, 01-login-form-footer.png. Simulate code that implements only header and form (footer missing).",
+      "expectations": [
+        "Skill detects that the footer section has no corresponding code",
+        "Gate check fails — handoff NOT shown until footer is implemented",
+        "After fix, every screenshot section name maps to a code file or component",
+        "log.md mentions the coverage check and which sections were verified"
+      ]
+    },
+
+    {
+      "id": 42,
+      "group": "O: QA Gate Checklist",
+      "name": "qa-all-checks-pass",
+      "prompt": "Simulate /i-wf run dispatching QA stage. All checks pass.",
+      "fixture": "I",
+      "fixture_detail": "Simulate: pnpm test:e2e PASSES; visual comparison matches for every section; zero console errors; zero failed network requests.",
+      "expectations": [
+        "log.md QA report includes E2E result (pass count, total)",
+        "log.md QA report includes visual comparison result per section (match/mismatch)",
+        "log.md QA report includes console error count and failed network request count",
+        "INDEX.md chunk stage updated to QA",
+        "Handoff block shown with all gate checks [x]",
+        "Next action lists /($)i-wf advance"
+      ]
+    },
+    {
+      "id": 43,
+      "group": "O: QA Gate Checklist",
+      "name": "qa-visual-mismatch-routes-back-to-code",
+      "prompt": "Simulate /i-wf run dispatching QA stage. Visual section B does not match design.",
+      "fixture": "I",
+      "fixture_detail": "Simulate: pnpm test:e2e PASSES, but visual comparison MISMATCHES for the form section.",
+      "expectations": [
+        "QA gate fails — no handoff block",
+        "Response describes the mismatch (which section, what's wrong)",
+        "INDEX.md chunk stage routed BACK to Code (not stays at QA)",
+        "log.md has REJECTED entry from QA with mismatch details",
+        "Skill suggests fixing in Code stage, then re-running"
+      ]
+    },
+
+    {
+      "id": 44,
+      "group": "P: Integrate stage",
+      "name": "integrate-architecture-review-fixes-violations",
+      "prompt": "Simulate /i-wf run dispatching Integrate stage. Code has architecture violations.",
+      "fixture": "J",
+      "fixture_detail": "Chunk created components/LoginForm.tsx (business code in generic folder). Should be moved to chunk's domain folder e.g. auth/login/.",
+      "expectations": [
+        "Skill detects the violation: business-only component in generic components/ folder",
+        "Skill MOVES the file in-place (within Integrate stage) to the correct domain folder",
+        "An additional commit is made with message containing 'fix: move' or similar refactor message",
+        "After fix, merge proceeds. NOT routed back to Code stage",
+        "log.md Integrate entry notes the architecture decision"
+      ]
+    },
+    {
+      "id": 45,
+      "group": "P: Integrate stage",
+      "name": "integrate-full-test-rerun-after-inplace-fix",
+      "prompt": "Simulate /i-wf run dispatching Integrate stage. After merge, full test suite fails.",
+      "fixture": "J",
+      "fixture_detail": "Simulate: chunk merge to feature branch succeeds. Then pnpm test fails on a UNRELATED file. Fix in-place, re-run.",
+      "expectations": [
+        "Skill fixes the failure in-place (within Integrate stage), commits the fix",
+        "Skill RE-RUNS THE FULL TEST SUITE (pnpm test + pnpm test:e2e + type-check + lint), not scoped",
+        "log.md records each test failure and the in-place fix",
+        "Skill does NOT route the chunk back to Code stage",
+        "Final state: feature branch has the merge commit AND the fix commit; all tests green"
+      ]
+    },
+    {
+      "id": 46,
+      "group": "P: Integrate stage",
+      "name": "integrate-state-files-updated",
+      "prompt": "Simulate /i-wf run dispatching Integrate stage. Verify state file updates.",
+      "fixture": "J",
+      "expectations": [
+        "chunks.md: this chunk's section is COLLAPSED to one-line summary plus link to log entry (not full detail anymore)",
+        "INDEX.md: chunk stage set to Done",
+        "log.md: Integrate-complete entry includes architecture decision and final commit hash",
+        "If graphify-out/ exists in repo: graphify update . was run (file modified timestamps newer)",
+        "Handoff block shown with all gate checks [x]"
+      ]
+    },
+
+    {
+      "id": 47,
+      "group": "Q: Git branch operations",
+      "name": "integrate-merges-chunk-to-feature",
+      "prompt": "Simulate /i-wf run dispatching Integrate stage. Verify git branch operations.",
+      "fixture": "J",
+      "expectations": [
+        "git log shows: rebase chunk branch onto feature branch performed",
+        "git log shows: merge of chunk branch into feature branch with --no-ff (a merge commit exists)",
+        "Feature branch is pushed to origin (verifiable via 'git log origin/wf/<id>')",
+        "Chunk branch wf/<id>/<NN> is DELETED locally (git branch -a does not show it)",
+        "Chunk branch is deleted remotely (or attempted)"
+      ]
+    },
+    {
+      "id": 48,
+      "group": "Q: Git branch operations",
+      "name": "last-chunk-merges-feature-to-preproduction",
+      "prompt": "Simulate /i-wf run dispatching Integrate stage on the LAST chunk.",
+      "fixture": "K",
+      "expectations": [
+        "After chunk merges to feature branch, skill detects this is the last chunk",
+        "Feature branch is rebased onto preproduction (clean rebase)",
+        "Feature branch merged into preproduction with --no-ff",
+        "Full test suite runs on preproduction; all green",
+        "preproduction is pushed to origin",
+        "Root docs/workflow/INDEX.md shows feature status Awaiting-Promote",
+        "log.md last entry references preproduction merge commit hash"
+      ]
+    },
+    {
+      "id": 49,
+      "group": "Q: Git branch operations",
+      "name": "preproduction-created-from-main-if-absent",
+      "prompt": "Simulate /i-wf run dispatching Integrate stage on the last chunk in a repo where 'preproduction' branch does not exist.",
+      "fixture": "K",
+      "fixture_detail": "Override: delete preproduction branch in the test fixture before running.",
+      "expectations": [
+        "Skill detects preproduction is absent",
+        "Skill creates preproduction branch from main",
+        "Feature branch is then merged into the newly-created preproduction",
+        "preproduction is pushed to origin (with -u flag if first push)",
+        "No conflicts (since preproduction == main at creation)"
+      ]
+    }
+
+  ]
+}

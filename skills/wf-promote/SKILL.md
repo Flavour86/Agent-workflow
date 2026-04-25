@@ -7,8 +7,8 @@ argument-hint: <feature-id>
 
 The user is invoking `/($)wf-promote` with arguments: $ARGUMENTS
 
-Invoke the `workflow` skill, if it is not present, print `workflow skill is missing. Please add it to the agent.` and stop.
-Read `promote.md` in the `workflow` skill
+Invoke the `wf-stages` skill, if it is not present, print `wf-stages skill is missing. Please add it to the agent.` and stop.
+Read `promote.md` in the `wf-stages` skill
 and execute the Promote stage exactly as documented there.
 
 Preconditions to check first:

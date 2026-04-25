@@ -1,12 +1,13 @@
 ---
-name: workflow
-description: Use when the user explicitly invokes `$workflow` to run the shared feature workflow, or when Claude slash-command wrappers route a workflow operation into the shared implementation.
+name: wf-stages
+description: Use when the user explicitly invokes `$workflow` to run the feature workflow, or when Claude slash-command wrappers route a workflow operation into the implementation.
 disable-model-invocation: true
+
 ---
 
 # Workflow Skill
 
-You are orchestrating the shared iterative feature workflow.
+You are orchestrating the iterative feature workflow.
 
 Navigation guide: `docs/workflow/README.md`， if the `docs/workflow/README.md` does not exist, stop and print `docs/workflow/README.md is missing. Please create it with /($)wf-init.`
 The `/($)wf-init` means if the agent is Codex, use `$wf-init`, if the agent is Claude-code, use `/wf-init`, the rule is: for Codex, use `$`, for Claude-code, use `/`, that suits for all the workflow commands following.
@@ -56,10 +57,10 @@ Gate check:
 - [ ] <criterion>
 
 Next action:
-  /wf-advance
-  /wf-reject <note>
-  /wf-blocked <reason>
-  /wf-promote <id>
+  /($)wf-advance
+  /($)wf-reject <note>
+  /($)wf-blocked <reason>
+  /($)wf-promote <id>
 ============================
 ```
 
