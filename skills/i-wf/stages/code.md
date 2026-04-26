@@ -4,7 +4,7 @@ Implements the chunk using TDD. Follows the approved Design notes exactly. Nothi
 
 ## External dependencies (hard stop if missing)
 
-- `superpowers:test-driven-development` skill
+- `superpowers:test-driven-development` or `test-driven-development` skill
 - `using-context7-for-libraries` skill (for framework/library lookups)
 
 ## File placement rules
@@ -45,7 +45,7 @@ Only move code to a common folder when it is actually used by more than one feat
 
 4. Read the feature's `INDEX.md` to know all acceptance criteria for this chunk.
 
-5. **For each acceptance criterion**, follow `superpowers:test-driven-development`:
+5. **For each acceptance criterion**, follow `superpowers:test-driven-development` or `test-driven-development`:
    a. Write the failing test
    b. Run it — verify it fails
    c. Write the minimal implementation following file placement rules

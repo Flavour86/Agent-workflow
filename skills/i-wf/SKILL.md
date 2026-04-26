@@ -1,7 +1,7 @@
-﻿---
+---
 name: i-wf
 description: Iterative Workflow (i-wf) — unified skill for feature development through Design → Code → QA → Integrate → Promote with explicit human gates. Invoke with /i-wf <subcommand> [args] in Claude Code or $i-wf <subcommand> [args] in Codex. Only fires when the user explicitly types /i-wf or $i-wf. Never self-invoke.
-argument-hint: <subcommand> [args] 
+argument-hint: <subcommand> [args]
 metadata:
   disable-model-invocation: true
 ---

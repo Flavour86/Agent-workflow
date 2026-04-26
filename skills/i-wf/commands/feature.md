@@ -8,10 +8,10 @@ Intake a new feature: collect all requirements, decompose into chunks, scaffold 
 
 1. **Parse args.** Extract `<description>` and `--type`. If `--type` is missing, ask the user: `feature | bug | refactor | optimization`.
 
-2. **Check `superpowers:brainstorming` skill.** Hard stop if not installed:
+2. **Check `superpowers:brainstorming` or `brainstorming` skill.** Hard stop if not installed:
    `Required: superpowers:brainstorming — install it first.`
 
-3. **Invoke `superpowers:brainstorming`** to deeply explore the feature with the user.
+3. **Invoke `superpowers:brainstorming` or `brainstorming` ** to deeply explore the feature with the user.
 
 4. **Ambiguity rule.** If anything is unclear — scope, acceptance criteria, edge cases — stop and ask the user. Do not proceed with assumptions. Resolve 100% of ambiguities before scaffolding.
 
@@ -85,7 +85,7 @@ Intake a new feature: collect all requirements, decompose into chunks, scaffold 
 ## Acceptance criteria for this command
 
 Before scaffolding, verify:
-- `superpowers:brainstorming` was invoked
+- `superpowers:brainstorming` or `brainstorming` was invoked
 - Feature type is declared
 - All ambiguities resolved — no open questions
 - Every chunk has specific, testable acceptance criteria
