@@ -66,11 +66,15 @@ Intake a new feature: collect all requirements, decompose into chunks, scaffold 
 
 11. **Update `docs/workflow/INDEX.md`** — add a row under Active features.
 
-12. **Commit scaffold on `preproduction`:**
+12. **Commit scaffold on the feature branch.** Stage the workflow docs plus any files the user explicitly referenced or attached during intake (prototypes, mockups, screenshots, reference designs, etc.). Identify these by scanning the intake conversation for file paths or attachments the user mentioned.
+
     ```bash
     git add docs/workflow/
+    git add <file1> <file2> ...   # only files explicitly provided by the user during intake
     git commit -m "chore(workflow): scaffold feature <feature-id>"
     ```
+
+    Do NOT use `git add -A` or `git add .` — only add `docs/workflow/` and the specific files the user provided. If no extra files were provided, omit the second `git add` line.
 
 13. **Print:**
     ```

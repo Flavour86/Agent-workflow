@@ -633,6 +633,22 @@
         "preproduction is pushed to origin (with -u flag if first push)",
         "No conflicts (since preproduction == main at creation)"
       ]
+    },
+
+    {
+      "id": 50,
+      "group": "D: Feature command",
+      "name": "feature-scaffold-commits-user-provided-files",
+      "prompt": "User runs /i-wf feature 'Login page' and has provided prototype.html and screenshots/login-ref.png. Verify the scaffold commit includes those files alongside docs/workflow/ — but does not blindly add unrelated files.",
+      "fixture": "B",
+      "fixture_detail": "After base clone, drop two user-provided files before running: `echo '<html>login</html>' > prototype.html` and `mkdir -p screenshots && echo 'PNG' > screenshots/login-ref.png`. Also create an unrelated file `unrelated.txt` that the user did NOT mention.",
+      "expectations": [
+        "docs/workflow/features/<feature-id>/ scaffold files committed (INDEX.md, chunks.md, log.md, feature.md)",
+        "Git commit includes prototype.html (visible in files_modified.txt or git show)",
+        "Git commit includes screenshots/login-ref.png (visible in files_modified.txt or git show)",
+        "unrelated.txt is NOT included in the commit — only user-mentioned files are staged",
+        "response.txt lists the extra files that were committed alongside the scaffold"
+      ]
     }
 
   ]
