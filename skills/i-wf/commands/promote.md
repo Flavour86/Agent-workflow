@@ -11,6 +11,10 @@ Merges `preproduction` → `main`, triggers CI/CD deploy, verifies live app, tag
 - `preproduction` branch exists and is pushed
 - `.env.deploy.local` exists
 - `deployment-status-check` skill available — hard stop if missing
+- `user.json` exists at project root — required for MCP authentication. If missing or there is no user's account in the file when any chrome-devtools MCP call is about to be made, **hard stop immediately** and ask the user:
+  ```
+  authentication info not found at project root. MCP authentication cannot proceed.
+  ```
 
 ## Steps
 
@@ -31,7 +35,7 @@ Merges `preproduction` → `main`, triggers CI/CD deploy, verifies live app, tag
      ```
 
 6. **Smoke check** — all three must pass. If any fails: hard stop, fix-forward only.
-   a. Navigate to every route touched by this feature via chrome-devtools MCP
+   a. Before navigating: verify whether authentication info exists at project root — hard stop if missing (see Preconditions). Navigate to every route touched by this feature via chrome-devtools MCP
    b. Verify each route: HTTP 200, zero console errors, zero failed network requests
    c. Screenshot each route and visually compare against `docs/workflow/design/pages/` mockups
 

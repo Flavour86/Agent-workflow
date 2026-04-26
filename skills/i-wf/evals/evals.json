@@ -636,6 +636,40 @@
     },
 
     {
+      "id": 51,
+      "group": "O: QA Gate Checklist",
+      "name": "qa-handoff-block-mandatory-final-step",
+      "prompt": "Simulate /i-wf run dispatching QA stage. All checks pass.",
+      "fixture": "I",
+      "fixture_detail": "Simulate: pnpm test:e2e PASSES; visual comparison matches for every section; zero console errors; zero failed network requests. Goal: verify the handoff block is the mandatory final output, not a prose summary.",
+      "expectations": [
+        "Response contains '===== WORKFLOW HANDOFF =====' — the full handoff block is printed, not replaced by prose",
+        "Handoff block is the LAST substantive output in the response (not followed by a plain-text summary)",
+        "All gate check items inside the handoff block are [x] — including 'Handoff block printed in full'",
+        "log.md QA report is appended before the handoff block is shown",
+        "INDEX.md chunk stage is updated to QA before the handoff block is shown",
+        "Next action inside the handoff block lists /($)i-wf advance"
+      ]
+    },
+
+    {
+      "id": 52,
+      "group": "L: Auto-advance (-a)",
+      "name": "qa-auto-advance-skips-handoff-block",
+      "prompt": "Simulate /i-wf run -a dispatching QA stage. All checks pass.",
+      "fixture": "I",
+      "fixture_detail": "Simulate: pnpm test:e2e PASSES; visual comparison matches for every section; zero console errors; zero failed network requests. The -a flag is active. Goal: verify that with -a, QA does NOT show the handoff block but instead auto-advances to Integrate immediately.",
+      "expectations": [
+        "Response does NOT contain '===== WORKFLOW HANDOFF =====' — handoff block is suppressed",
+        "INDEX.md chunk stage is updated to Integrate (not QA) — auto-advance happened",
+        "log.md QA report is still appended (gate evidence is always recorded regardless of -a)",
+        "log.md contains a QA -> Integrate transition entry",
+        "Git commit message contains 'advance' or records the QA -> Integrate transition",
+        "Response describes QA completion and the auto-advance to Integrate without stopping for user approval"
+      ]
+    },
+
+    {
       "id": 50,
       "group": "D: Feature command",
       "name": "feature-scaffold-commits-user-provided-files",
@@ -648,6 +682,41 @@
         "Git commit includes screenshots/login-ref.png (visible in files_modified.txt or git show)",
         "unrelated.txt is NOT included in the commit — only user-mentioned files are staged",
         "response.txt lists the extra files that were committed alongside the scaffold"
+      ]
+    },
+
+    {
+      "id": 53,
+      "group": "O: QA Gate Checklist",
+      "name": "qa-user-json-missing-hard-stop",
+      "prompt": "Simulate /i-wf run dispatching QA stage. chrome-devtools MCP is available. pnpm test:e2e is available. user.json does NOT exist at project root.",
+      "fixture": "I",
+      "fixture_detail": "QA stage ready to execute. chrome-devtools MCP available. pnpm test:e2e available. user.json does NOT exist at project root — no credentials file of any kind at project root. Skill must check for user.json before any MCP navigation.",
+      "expectations": [
+        "Skill hard-stops BEFORE attempting any chrome-devtools MCP call",
+        "Response contains 'authentication info not found' or equivalent credential-missing message",
+        "No chrome-devtools MCP navigation calls made",
+        "No screenshots taken or saved",
+        "No QA report appended to log.md",
+        "No INDEX.md stage update",
+        "No handoff block shown"
+      ]
+    },
+
+    {
+      "id": 54,
+      "group": "I: Promote command",
+      "name": "promote-user-json-missing-hard-stop",
+      "prompt": "/i-wf promote 2026-04-24-login-page — all chunks Done. user.json does NOT exist at project root.",
+      "fixture": "D",
+      "fixture_detail": "Feature 2026-04-24-login-page has all chunks at Done/Awaiting-Promote. deployment-status-check skill available. .env.deploy.local exists. preproduction branch exists and is pushed. user.json does NOT exist at project root. Simulate deployment succeeds (step 5 passes). Skill must check for user.json before smoke-check MCP navigation at step 6a.",
+      "expectations": [
+        "Skill hard-stops at smoke check step 6a before any chrome-devtools MCP navigation",
+        "Response contains 'authentication info not found' or equivalent credential-missing message",
+        "No chrome-devtools MCP navigation calls made",
+        "No git tag created (step 7 not reached)",
+        "No branch deletions performed",
+        "No archive operation performed"
       ]
     }
 
