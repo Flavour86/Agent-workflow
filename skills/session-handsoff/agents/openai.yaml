@@ -1,7 +1,7 @@
 interface:
-  display_name: "i-wf"
-  short_description: "Human-gated workflow for iterative feature delivery."
-  default_prompt: "Use $i-wf status to inspect the current workflow state."
+  display_name: "session-handsoff"
+  short_description: "Reads the current session context and prints a structured handoff block to the terminal — what was done, what's still to do, and exactly where the next session should start. Invoke with /session-handsoff in Claude Code or $session-handsoff in Codex"
+  default_prompt: "Use $session-handsoff to hands off the task to next session."
 
 policy:
   allow_implicit_invocation: false
