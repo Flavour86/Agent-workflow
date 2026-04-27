@@ -718,6 +718,23 @@
         "No branch deletions performed",
         "No archive operation performed"
       ]
+    },
+
+    {
+      "id": 55,
+      "group": "M: Design Modes",
+      "name": "design-screenshot-scroll-reveal-sections",
+      "prompt": "Simulate /i-wf run dispatching Design stage. The page uses IntersectionObserver-based scroll animations — sections are invisible until scrolled into viewport. Verify the skill captures all sections correctly.",
+      "fixture": "G",
+      "fixture_detail": "design/pages/home.html exists with 6 sections. Three sections (FeatureGrid, HowItWorks, FinalCtaBand) are hidden until scrolled into view via IntersectionObserver. chrome-devtools MCP is available. Simulate: skill opens the HTML, then scrolls from top to bottom in steps before taking screenshots.",
+      "expectations": [
+        "Before any screenshot is taken, skill executes JS that scrolls the page from top to bottom in incremental steps (not a single jump to scrollHeight)",
+        "JS scroll includes a delay between steps (setTimeout or equivalent) to allow IntersectionObserver callbacks to fire",
+        "After scroll completes, skill scrolls back to top before capturing section screenshots",
+        "Screenshot files saved to features/<id>/screenshots/ show all sections — no dark voids for any declared component",
+        "Gate check passes: every component in the Component breakdown has a visual representation in the saved screenshots",
+        "Handoff block is NOT shown if any section remains a dark void (gate enforcement still applies)"
+      ]
     }
 
   ]

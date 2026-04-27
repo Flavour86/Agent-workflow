@@ -27,7 +27,8 @@ Approves the current stage output and advances the chunk to the next stage. Only
 
 6. **Print:**
    `<chunk-id>: <old-stage> → <new-stage>`
-   Then suggest: `/($)i-wf run <feature-id>` or `/($)i-wf promote <feature-id>` at Awaiting-Promote.
+
+7. immediately do the next stage if next stage is existing
 
 ## With `-a`
 

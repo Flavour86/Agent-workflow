@@ -51,9 +51,11 @@ Read `docs/workflow/design/pages/` to determine which mode applies:
 
 7. **Screenshot workflow:**
    a. Open the updated `.html` file in browser via chrome-devtools MCP
-   b. Take a screenshot of each section relevant to this chunk
-   c. Annotate / circle / highlight the changed areas
-   d. Save to `docs/workflow/features/<feature-id>/screenshots/<NN-slug>-<section>.png`
+   b. Before taking any screenshot, execute some javascript to simulate user's action scrolling page from top to bottom — this ensures all sections render regardless of IntersectionObserver state
+   c. Scroll to each section and verify it is visually present (not a dark void) before capturing
+   d. Take a screenshot of each section relevant to this chunk
+   e. Annotate / circle / highlight the changed areas
+   f. Save to `docs/workflow/features/<feature-id>/screenshots/<NN-slug>-<section>.png`
 
 8. Append **Design notes** to this chunk's section in `chunks.md`:
    - Component breakdown (specific enough that a developer makes zero design decisions while coding)

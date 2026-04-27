@@ -49,7 +49,9 @@ Merges `preproduction` → `main`, triggers CI/CD deploy, verifies live app, tag
 
 11. `git add -A && git commit -m "archive: <feature-id>" && git push origin main`
 
-12. Print handoff with feature ID, commit SHA, tag, live URL, and archive path.
+12. Run `graphify update .` if `graphify-out/` exists.
+
+13. Print handoff with feature ID, commit SHA, tag, live URL, and archive path.
 
 ## Deployment failure rule
 

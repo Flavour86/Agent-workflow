@@ -39,9 +39,7 @@ Merges the chunk into the feature branch, runs the full test suite, reviews code
 
 12. Append to `log.md`: integrate complete, architecture decision, commit hash.
 
-13. Run `graphify update .` if `graphify-out/` exists.
-
-14. **If this is the last chunk in the feature:**
+13. **If this is the last chunk in the feature:**
     a. Fetch/create `preproduction` from `main` if absent
     b. Rebase feature branch onto `preproduction`:
        ```bash
@@ -56,7 +54,11 @@ Merges the chunk into the feature branch, runs the full test suite, reviews code
     e. Push `preproduction` to origin.
     f. Update `INDEX.md`: feature status → `Awaiting-Promote`.
 
-15. Show handoff block when all gate checks pass.
+14. Check gate checklist(below), if gate check failed, hard stop and do the Rejection(below) step, otherwise must show handoff block unless the `-a` flag at the end command when all gate checks pass.
+
+15. After user approve the handsoff,
+if current chunk is last chunk of the feature print :`Next action: /($)i-wf run <feature-id>` 
+else print: `/($)i-wf promote <feature-id>` at Awaiting-Promote.
 
 ## Architecture review (hard block)
 
@@ -88,12 +90,9 @@ If any test fails: fix the code in-place within the Integrate stage, commit, re-
 - [x] Rebase onto feature branch clean
 - [x] Merge into feature branch successful
 - [x] Full unit + E2E + type-check + lint green on feature branch
-- [x] If last chunk: feature branch rebased and merged into `preproduction` cleanly
-- [x] If last chunk: full test suite green on `preproduction`
-- [x] Feature branch pushed / `preproduction` pushed (last chunk)
+- [x] If last chunk: feature branch rebased and merged into `preproduction` cleanly, and push
 - [x] Chunk branch deleted locally and remotely
 - [x] `chunks.md`, `INDEX.md`, `log.md` updated
-- [x] `graphify-out/` updated (if folder exists)
 
 ## Rejection path
 
