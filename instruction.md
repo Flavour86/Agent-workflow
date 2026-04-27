@@ -1,115 +1,38 @@
-## What this repo is
+## Repository Overview
 
-A portable LLM workflow system — a collection of Claude Code skills and templates that drive feature development through **Design → Code → QA → Integrate → Promote** with explicit human gates. The skills in this repo are **installed into other projects**, not run here directly. State files (`docs/workflow/`) are always created in the target project, not here.
+This repository is a source library for reusable agent skills.
+It stores skill definitions, support files, templates, command references, and eval notes.
+The skills are installed into other projects; this repository is not a runtime application.
 
-## Architecture
+## Repository Structure
 
-Three layers:
+- `skills/` contains the reusable skills.
+- `skills/<skill-name>/SKILL.md` is the required entry point for each skill.
+- `skills/<skill-name>/commands/` contains command-specific instructions when a skill has subcommands.
+- `skills/<skill-name>/stages/` contains workflow-stage instructions when a skill is stage based.
+- `skills/<skill-name>/templates/` contains reusable markdown or project files used by the skill.
+- `skills/<skill-name>/agents/` contains optional agent metadata.
+- `skills/<skill-name>/evals/` contains optional evaluation material.
+- `scripts/install.js` copies all skills into `~/.agents/skills/`.
 
-### 1. Skills — `skills/`
+## Current Skills
 
-Each subfolder is a deployable Claude Code skill (frontmatter + instructions in `SKILL.md`).
+- `i-wf` is an iterative feature workflow.
+  It guides work through Design, Code, QA, Integrate, and Promote stages with human gates.
+  Use it for feature delivery that needs state tracking, chunking, branch rules, and handoffs.
 
-| Skill | Role |
-|---|---|
-| `skills/workflow/` | Shared orchestrator — all stage logic lives here. All other skills delegate to it. |
-| `skills/wf-init/` | Initialize `docs/workflow/` in a target project |
-| `skills/wf-feature/` | Intake a feature, propose tree decomposition, scaffold folder |
-| `skills/wf-run/` | Run the current stage of a chunk (`-a` auto-advances) |
-| `skills/wf-status/` | Read-only dashboard view |
-| `skills/wf-advance/` | Approve stage output, advance chunk |
-| `skills/wf-reject/` | Redo current stage with feedback note |
-| `skills/wf-blocked/` | Mark chunk blocked |
-| `skills/wf-promote/` | Merge preproduction → main, deploy, archive |
-| `skills/wf-bootstrap/` | One-shot server provisioning (new apps only) |
+- `session-handsoff` prints a structured handoff for the current session.
+  It records completed work, remaining work, and the exact starting point for the next session.
+  Use it when a future agent needs to resume without full conversation context.
 
-### 2. Stage references — `skills/workflow/stages/`
+## Agent Editing Rules
 
-One file per stage. `skills/workflow/SKILL.md` dispatches to these. Each file is the authoritative logic for that stage — never improvise outside them.
-
-| File | Handoff type |
-|---|---|
-| `design.md` | Always human-gate (`-a` does NOT auto-approve) |
-| `code.md` | Auto → QA on gate pass |
-| `qa.md` | Auto → Integrate on gate pass |
-| `integrate.md` | Always human-gate |
-| `promote.md` | Triggered by `/wf-promote` only |
-| `bootstrap.md` | Triggered by `/wf-bootstrap`, one-shot per app |
-
-### 3. Templates — `skills/workflow/templates/`
-
-Used by `/wf-feature` to scaffold a new feature folder in the target project.
-
-| Template | Purpose |
-|---|---|
-| `feature.md` | Feature intake metadata |
-| `tree.md` | One file per parallel workstream |
-| `log.md` | Chronological stage transition log |
-| `INDEX-feature.md` | Per-feature chunk state table |
-
-## Core concepts
-
-- **Feature** — a unit of work, decomposed into one or more trees.
-- **Tree** — an independent parallel lane. Trees can only be separate if they can start on day 0 without any dependency on another tree. When in doubt, merge into one tree.
-- **Chunk** — a vertical slice task (front-end + back-end + API + DB as needed). Chunks within a tree are strictly sequential.
-- **Chunk ID format:** `<feature-slug>/<tree>/<NN-slug>` (e.g. `2026-04-20-homepage-refactor/A-hero/01-hero-layout`)
-- **Branch naming:** `wf/<feature-slug>/<tree>/<NN>`
-- **Stage enum:** `Pending | Design | Code | QA | Integrate | Awaiting-Promote | Done | Blocked | Rejected`
-
-## Handoff block
-
-Every stop point must print this exact shape:
-
-```
-===== WORKFLOW HANDOFF =====
-Chunk: <feature>/<tree>/<NN-slug>
-Stage: <name>    Gate: go | reject | pause
-What I did:
-- <bullet>
-
-Artifacts:
-- <path or URL> - <note>
-
-Gate check:
-- [x] <criterion>
-- [ ] <criterion>
-
-Next action:
-  /wf-advance
-  /wf-reject <note>
-  /wf-blocked <reason>
-  /wf-promote <id>
-============================
-```
-
-Same shape every time. Never omit or restructure it.
-
-## Error recovery rules
-
-| Failure | Action |
-|---|---|
-| Stage gate fails (tests/lint/type-check) | Stop. Log. Wait for `/wf-reject`. No auto-retry. |
-| Merge conflict in Integrate | Stop. Print conflicting files. Never auto-resolve. |
-| Duplication found in Integrate | Offer three options: extract now / defer to mini-refactor chunk / document-and-ignore. User picks. |
-| Subagent crash during `-a` Code | Mark chunk Blocked. Stop `-a`. Do not silently skip. |
-| Unexpected git state | Refuse to run. User resolves. |
-| `.env.deploy.local` missing at Promote | Stop. Direct to `/wf-bootstrap` or manual creation. |
-| SSH drop during Bootstrap | Retry once (5s → 20s backoff). Second fail → Blocked. |
-| Playwright baseline missing on first QA | Prompt for baseline creation or reject to fix UI first. |
-
-## State change rules
-
-- State in `docs/workflow/` is changed **only** via workflow commands, never by hand-editing.
-- Only exception: `/wf-blocked <reason>` may append a free-text note to the log.
-- If `INDEX.md` and a log disagree about a chunk's stage, **the log is authoritative**.
-- Never edit anything under `docs/workflow/archive/`.
-
-## Codex / multi-agent usage
-
-For Codex, use `$` prefix instead of `/` (e.g. `$wf-run`, `$wf-advance`). The `workflow` skill's `agents/openai.yaml` has `allow_implicit_invocation: false` — Codex must invoke the skill explicitly via `$workflow ...`.
-
-## Adding or modifying skills
-
-- The `workflow` skill is the single source of truth for orchestration. Changes to stage logic go in `skills/workflow/stages/<stage>.md`.
-- Thin wrapper skills (`wf-*`) should only parse arguments and delegate to `workflow`. Do not duplicate orchestration logic in wrappers.
-- When creating new stages, add them to the stage enum in `skills/workflow/SKILL.md` and create the matching file in `skills/workflow/stages/`.
+- Before editing, read `philosophy.md` and this file.
+- Keep changes surgical and directly tied to the user request.
+- Preserve each skill as a self-contained directory.
+- Keep `SKILL.md` YAML frontmatter at the first byte of the file.
+- Do not add a UTF-8 BOM to `SKILL.md`.
+- Use edit tools for `SKILL.md`; never use PowerShell `Out-File`, `Set-Content`, or shell redirection.
+- Do not self-invoke disabled skills; only run them when the user explicitly asks.
+- When adding a skill, update `README.MD` and this file with a short summary.
+- Keep documentation lines under 120 characters.
