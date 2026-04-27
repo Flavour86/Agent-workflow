@@ -48,9 +48,9 @@ Only move code to a common folder when it is actually used by more than one feat
 5. **For each acceptance criterion**, follow `superpowers:test-driven-development` or `test-driven-development`:
    a. Write the failing test
    b. Run it — verify it fails
-   c. Write the minimal implementation following file placement rules
+   c. Write the minimal implementation following **file placement rules**, **using the tailwindcss as possible as you can**.
    d. Run it — verify it passes
-   e. Refactor if needed
+   e. Refactor if needed，**extract common logic if it needs from multiple modules**, make code clean 
    f. Commit: one criterion at a time
 
 6. **Coverage check** before gate:
@@ -79,6 +79,8 @@ Only move code to a common folder when it is actually used by more than one feat
 - [x] No unused/dead code in any file touched by this chunk
 - [x] `INDEX.md` and `log.md` updated
 - [x] Changes committed to chunk branch
+- [x] leverage the tailwindcss
+- [x] Abide with the rule that don't repeat slightly different codes accross multiple modules, extract common part
 
 ## Rejection path
 

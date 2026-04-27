@@ -30,12 +30,32 @@ Intake a new feature: collect all requirements, decompose into chunks, scaffold 
 
    Each acceptance criterion must be testable (verifiable pass/fail). Never accept vague criteria like "make it look nice" — get specifics.
 
+   **UI page decomposition rules (apply when chunk type is New UI):**
+
+   - **150-line threshold**: If the entire feature fits in ≤150-200 lines, keep it as a single chunk. Only split when a component would exceed 200 lines.
+   - **Split by UI section**: When splitting, each chunk covers one logical UI section. Sections may differ in code size — roughly equivalent is sufficient, do not over-engineer the balance.
+   - **Component boundary decision**: Decomposing chunks is simultaneously deciding component architecture. Each UI chunk defines exactly one component and declares its target file path. Deciding the chunk split = deciding which files will exist.
+   - **Non-flat folder structure**: All submodules live inside the root business module folder. Each submodule gets its own subfolder.
+     ```
+     root/        ← root business module
+       marketing-nav/            ← submodule folder
+         index.tsx
+       hero-section/
+         index.tsx
+       feature-grid/
+         index.tsx
+       page.tsx                  ← composes submodules
+     ```
+   - **Page composition**: The route/page file composes all submodule components. Build it in the final integration chunk after all submodules are complete.
+   - **Scope balance check**: Before presenting the decomposition, verify no chunk is 3× heavier than others — rebalance if so. If the regression/polish chunk is trivially light, absorb it into the last implementation chunk's QA stage instead.
+
 6. **Present the decomposition** and wait for user approval:
    ```
    Proposed decomposition for "<description>" (--type <type>):
 
    01-<chunk-slug>: <description>
      Stages: design → code → qa → integrate
+     Component: <module-folder>/<submodule-folder>/index.tsx   # UI chunks only
      Acceptance criteria:
        - <specific, testable criterion>
        - <specific, testable criterion>
@@ -91,4 +111,6 @@ Before scaffolding, verify:
 - Every chunk has specific, testable acceptance criteria
 - Every chunk has a declared stage list matching its type
 - All aspects of the user's request are covered by at least one chunk
+- For every UI chunk: component target path declared, folder structure is non-flat.
+- Scope balance verified: no chunk is 3× heavier than others
 - User explicitly approved the decomposition before any scaffold files were created
