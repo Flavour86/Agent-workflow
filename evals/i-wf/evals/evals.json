@@ -721,6 +721,49 @@
     },
 
     {
+      "id": 56,
+      "group": "R: UI Decomposition Rules",
+      "name": "decompose-small-component-single-chunk",
+      "prompt": "/i-wf feature \"Add a compact notification badge component that shows an unread count number over an icon\" --type feature. Treat superpowers:brainstorming as available. Simulate user replying 'approve' after the first decomposition presented.",
+      "fixture": "B",
+      "expectations": [
+        "Decomposition presents exactly ONE chunk (component fits within ~150 lines, no split needed)",
+        "Single chunk has stages: design → code → qa → integrate",
+        "Component: line is declared with a non-flat subfolder path (e.g. notification-badge/index.tsx)",
+        "Response does NOT split into multiple section-based chunks"
+      ]
+    },
+
+    {
+      "id": 57,
+      "group": "R: UI Decomposition Rules",
+      "name": "decompose-large-page-section-split-non-flat",
+      "prompt": "/i-wf feature \"Build a public marketing homepage with: NavBar (logo + links + auth buttons), HeroSection (headline + two CTAs + product screenshot), FeatureSummary (6-item grid of feature cards), Testimonials (3-card carousel), PricingBand (3 plan tiers), and FooterSection (links + copyright)\" --type feature. Treat superpowers:brainstorming as available. Simulate user replying 'approve' after the first decomposition presented.",
+      "fixture": "B",
+      "expectations": [
+        "Decomposition presents at least 4 separate UI chunks (not one chunk for the whole page)",
+        "Each UI chunk includes a 'Component:' line with a file path",
+        "All component paths share the same root business module folder (not scattered across different dirs)",
+        "Each component path uses a subfolder structure (e.g. marketing-nav/index.tsx), not a flat file (e.g. MarketingNav.tsx)",
+        "A final chunk handles page composition (route/page file composing all submodules)"
+      ]
+    },
+
+    {
+      "id": 58,
+      "group": "R: UI Decomposition Rules",
+      "name": "decompose-scope-balance-rebalance",
+      "prompt": "/i-wf feature \"Add a settings page with a one-line Theme toggle at the top, followed by a comprehensive notification preferences section with 20 granular toggles organized into 5 categories (email, push, in-app, digest, and security alerts), each with descriptions and frequency selectors\" --type feature. Treat superpowers:brainstorming as available. Simulate user replying 'approve' after the first decomposition presented.",
+      "fixture": "B",
+      "expectations": [
+        "The Theme toggle and full notification section are NOT put into a single equal-weight chunk pair — the notification section is further split due to its size",
+        "Each UI chunk includes a 'Component:' line with a non-flat subfolder path",
+        "All component paths share the same root business module folder",
+        "No single chunk is obviously 3x heavier in described scope than the lightest chunk"
+      ]
+    },
+
+    {
       "id": 55,
       "group": "M: Design Modes",
       "name": "design-screenshot-scroll-reveal-sections",
