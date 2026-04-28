@@ -78,7 +78,7 @@ After merging the chunk into the feature branch, run:
 pnpm test          # full unit test suite — not scoped to this chunk
 pnpm test:e2e      # full E2E suite — not scoped to this chunk
 pnpm type-check
-pnpm lint
+pnpm lint          # zero errors for all and zero warnings for touched files
 ```
 
 If any test fails: fix the code in-place within the Integrate stage, commit, re-run the full suite. Repeat until all pass. Do not route back to Code stage — that restarts the entire Code → QA → Integrate cycle unnecessarily.
@@ -89,7 +89,7 @@ If any test fails: fix the code in-place within the Integrate stage, commit, re-
 - [x] All file placement violations fixed before merge
 - [x] Rebase onto feature branch clean
 - [x] Merge into feature branch successful
-- [x] Full unit + E2E + type-check + lint green on feature branch
+- [x] Full unit + E2E + type-check + lint green on feature branch. Beside, must be zero warnings for touched files.
 - [x] If last chunk: feature branch rebased and merged into `preproduction` cleanly, and push
 - [x] Chunk branch deleted locally and remotely
 - [x] `chunks.md`, `INDEX.md`, `log.md` updated

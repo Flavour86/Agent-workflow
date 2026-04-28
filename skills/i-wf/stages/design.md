@@ -57,10 +57,24 @@ Read `docs/workflow/design/pages/` to determine which mode applies:
    e. Annotate / circle / highlight the changed areas
    f. Save to `docs/workflow/features/<feature-id>/screenshots/<NN-slug>-<section>.png`
 
-8. Append **Design notes** to this chunk's section in `chunks.md`:
+8. **Extract visual specifications** for all visual components in this chunk:
+   a. For each component, document:
+      - **Colors:** Exact hex/RGB values for all states (default, hover, active, disabled)
+      - **Typography:** Font family, size (px), weight, line-height, letter-spacing
+      - **Spacing:** Padding, margin, gap values (in px)
+      - **Styling:** Border width/style/color, border-radius, box-shadow
+      - **Animations:** Animation names, duration, easing, transform properties
+      - **Device compatibility:** Specific layout and sizing for desktop (≥1024px), tablet (768-1023px), mobile (<768px)
+   b. Create `docs/workflow/features/<feature-id>/specs/<NN>-<chunk-slug>-specs.md` using the visual-specs.md template
+   c. Include visual references (screenshots, design tokens used)
+   d. Ensure specifications are complete enough that a developer needs ZERO design decisions while coding
+
+9. Append **Design notes** to this chunk's section in `chunks.md`:
    - Component breakdown (specific enough that a developer makes zero design decisions while coding)
+   - Link to visual specifications file: `docs/workflow/features/<feature-id>/specs/<NN>-<chunk-slug>-specs.md`
    - Design tokens referenced
-   - Interaction notes
+   - Interaction notes (including animations and state changes)
+   - Device compatibility notes for each breakpoint
    - Screenshot paths
 
 9. Append to `log.md`:
@@ -78,13 +92,20 @@ Read `docs/workflow/design/pages/` to determine which mode applies:
 ## Gate checklist
 
 - [x] Every acceptance criterion from `chunks.md` has a visual representation in the mockup
+- [x] Visual specifications file created: `docs/workflow/features/<feature-id>/specs/<NN>-<chunk-slug>-specs.md`
+- [x] **Colors:** All colors documented with exact hex/RGB values for all states
+- [x] **Typography:** All text elements documented (font, size, weight, line-height, letter-spacing)
+- [x] **Spacing:** All padding, margin, gap values documented in pixels
+- [x] **Styling:** Borders, border-radius, shadows documented
+- [x] **Animations:** All animations and transitions fully specified (name, duration, easing, transform)
+- [x] **Device compatibility:** Layout and sizing specified for desktop, tablet, and mobile breakpoints
 - [x] Only existing design tokens used — any new token explicitly flagged
 - [x] Component breakdown specific enough — developer makes zero design decisions while coding
 - [x] For iteration: only changed sections differ; rest of the file untouched
 - [x] Annotated screenshot saved to `features/<feature-id>/screenshots/`
 - [x] `ui-ux-pro-max` invoked for brand-new page (if applicable)
 - [x] `design/system/` created for first-time app design (if applicable)
-- [x] Design notes written into `chunks.md`
+- [x] Design notes written into `chunks.md` with link to visual specifications
 - [x] `INDEX.md` and `log.md` updated
 - [x] Changes committed to chunk branch
 
