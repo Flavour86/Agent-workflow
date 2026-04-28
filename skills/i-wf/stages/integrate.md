@@ -10,7 +10,7 @@ Merges the chunk into the feature branch, runs the full test suite, reviews code
 
 1. Preflight: QA gate passed, working tree clean, on chunk branch.
 
-2. **Invoke `code-review`** on the chunk branch. If blocking findings: hard stop with a plain-text message listing the findings. Wait for `/($)i-wf reject <note>` before proceeding.
+2. ** Invoke `code-review` skill ** on the chunk branch. If blocking findings: hard stop with a plain-text message listing the findings. Wait for `/($)i-wf reject <note>` before proceeding.
 
 3. **Architecture review** (see below). Fix all violations in-place before merging.
 
@@ -85,7 +85,7 @@ If any test fails: fix the code in-place within the Integrate stage, commit, re-
 
 ## Gate checklist
 
-- [x] `code-review` passed — no blocking findings
+- [x] `code-review` skill checking passed — no blocking findings
 - [x] All file placement violations fixed before merge
 - [x] Rebase onto feature branch clean
 - [x] Merge into feature branch successful
