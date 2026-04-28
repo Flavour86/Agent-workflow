@@ -15,6 +15,50 @@ The skills are installed into other projects; this repository is not a runtime a
 - `skills/<skill-name>/evals/` contains optional evaluation material.
 - `scripts/install.js` copies all skills into `~/.agents/skills/`.
 
+## Folder Organization for Evals and Workspace
+
+### Evals Directory Structure
+
+Evals are stored in `evals/` and organized by skill name:
+
+```
+evals/
+├── <skill-name>/
+│   └── evals/
+│       └── evals.json          # Evaluation definitions and test cases
+```
+
+Each skill's evals are self-contained. The `evals.json` file defines the test cases that agents will run.
+
+### Workspace Directory Structure
+
+Test execution results are stored in `i-wf-workspace/` and organized by skill name and iteration:
+
+```
+i-wf-workspace/
+├── <skill-name>/
+│   ├── benchmark-all.json      # Aggregated results across all iterations
+│   ├── benchmark-all.md        # Summary report of all iterations
+│   ├── iteration-1/
+│   │   ├── benchmark.json      # Iteration-level benchmark results
+│   │   ├── eval-ID-eval-name/  # Individual eval execution result
+│   │   │   ├── eval_metadata.json    # Test metadata (name, status, duration)
+│   │   │   └── testdir/             # Test execution environment and outputs
+│   │   │       ├── .git/            # Git state of the test
+│   │   │       ├── src/             # Project source code
+│   │   │       └── [other files]    # Test-specific files and logs
+│   │   └── eval-N-eval-name/
+│   └── iteration-2/
+│       └── [same structure as iteration-1]
+```
+
+**Key points:**
+- `<skill-name>` matches the skill directory name (e.g., `i-wf`, `session-handsoff`).
+- Each iteration (`iteration-1`, `iteration-2`, etc.) represents a test run.
+- Each eval within an iteration has its own directory named `eval-ID-eval-name`.
+- The `eval_metadata.json` contains test results and execution details.
+- The `testdir/` contains the full test environment: git history, source code, and any generated outputs.
+
 ## Current Skills
 
 - `i-wf` is an iterative feature workflow.
