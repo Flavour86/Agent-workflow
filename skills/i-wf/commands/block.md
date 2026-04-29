@@ -6,17 +6,17 @@ Marks the current chunk as Blocked. Blocked chunks are excluded from `-a` automa
 
 ## Steps
 
-1. **Resolve feature.** If `feature-id` given, use it. Otherwise read `docs/workflow/INDEX.md` for the active feature.
+1. **Resolve feature.** If `feature-id` given, use it. Otherwise read `${projectDir}/docs/workflow/INDEX.md` for the active feature.
 
 2. **Identify the current chunk** in progress.
 
 3. **Ask for a blocking reason** if not provided in arguments.
 
-4. **Update `docs/workflow/features/<feature-id>/INDEX.md`:** set this chunk's stage to `Blocked`.
+4. **Update `${projectDir}/docs/workflow/features/<feature-id>/INDEX.md`:** set this chunk's stage to `Blocked`.
 
-5. **Update root `docs/workflow/INDEX.md`:** set the feature row stage/current chunk to `Blocked` for this chunk so dashboard status matches the feature file.
+5. **Update root `${projectDir}/docs/workflow/INDEX.md`:** set the feature row stage/current chunk to `Blocked` for this chunk so dashboard status matches the feature file.
 
-6. **Append to `docs/workflow/features/<feature-id>/log.md`:**
+6. **Append to `${projectDir}/docs/workflow/features/<feature-id>/log.md`:**
    ```
    ## <DATE> — <chunk-id> — BLOCKED
 
@@ -26,7 +26,7 @@ Marks the current chunk as Blocked. Blocked chunks are excluded from `-a` automa
 
 7. **Commit:**
    ```bash
-   git add docs/workflow/
+   git add ${projectDir}/docs/workflow/
    git commit -m "chore(workflow): block <chunk-id>"
    ```
 

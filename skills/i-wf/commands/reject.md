@@ -6,11 +6,13 @@ Rejects the current stage output and immediately redoes the stage specified by t
 
 ## Steps
 
+0. **Set worktree context.** Same as `advance` — run `git worktree list`, find the active feature worktree under `${projectDir}/.worktrees/`, and execute all operations from inside it.
+
 1. **Parse `<note>`.** If empty, ask the user for a reason before continuing.
 
 2. **Identify the current chunk and stage.**
 
-3. **Append to `docs/workflow/features/<feature-id>/log.md`:**
+3. **Append to `${projectDir}/docs/workflow/features/<feature-id>/log.md`:**
    ```markdown
    ## <DATE> - <chunk-id> - REJECTED at <stage>
 
@@ -23,13 +25,13 @@ Rejects the current stage output and immediately redoes the stage specified by t
    - Design rejection: keep the chunk at `Design`
    - Code rejection: keep the chunk at `Code`
    - QA rejection: route the chunk back to `Code`
-   - Integrate rejection: stop and ask whether to revert the merge or leave it and create a follow-up chunk
+   - Integrate rejection: ask the user to confirm, then `git revert HEAD` on the feature branch to undo the integrate commit; keep chunk at `Integrate`
 
-6. **Update state files.** Update `docs/workflow/features/<feature-id>/INDEX.md` and root `docs/workflow/INDEX.md` when the target stage changes. Do not advance the chunk.
+6. **Update state files.** Update `${projectDir}/docs/workflow/features/<feature-id>/INDEX.md` and root `${projectDir}/docs/workflow/INDEX.md` when the target stage changes. Do not advance the chunk.
 
 7. **Commit:**
    ```bash
-   git add docs/workflow/
+   git add ${projectDir}/docs/workflow/
    git commit -m "chore(workflow): reject <chunk-id>"
    ```
 

@@ -1,16 +1,16 @@
 # Command: init
 
-Sets up `docs/workflow/` in the target project. Safe to re-run — skips files that already exist.
+Sets up `${projectDir}/docs/workflow/` in the target project. Safe to re-run — skips files that already exist.
 
 ## Steps
 
 1. Create folders:
    ```bash
-   mkdir -p docs/workflow/features docs/workflow/archive
-   touch docs/workflow/features/.gitkeep docs/workflow/archive/.gitkeep
+   mkdir -p ${projectDir}/docs/workflow/features ${projectDir}/docs/workflow/archive
+   touch ${projectDir}/docs/workflow/features/.gitkeep ${projectDir}/docs/workflow/archive/.gitkeep
    ```
 
-2. Write `docs/workflow/README.md` (skip if already non-empty):
+2. Write `${projectDir}/docs/workflow/README.md` (skip if already non-empty):
    ```markdown
    # Workflow System
 
@@ -36,7 +36,7 @@ Sets up `docs/workflow/` in the target project. Safe to re-run — skips files t
    - Never edit anything under archive/ — frozen history
    ```
 
-3. Write `docs/workflow/INDEX.md` (skip if already non-empty):
+3. Write `${projectDir}/docs/workflow/INDEX.md` (skip if already non-empty):
    ```markdown
    # Workflow Dashboard
 
@@ -51,20 +51,20 @@ Sets up `docs/workflow/` in the target project. Safe to re-run — skips files t
 
 4. Verify all four paths exist:
    ```bash
-   ls docs/workflow/README.md docs/workflow/INDEX.md \
-      docs/workflow/features/.gitkeep docs/workflow/archive/.gitkeep
+   ls ${projectDir}/docs/workflow/README.md ${projectDir}/docs/workflow/INDEX.md \
+      ${projectDir}/docs/workflow/features/.gitkeep ${projectDir}/docs/workflow/archive/.gitkeep
    ```
 
 5. If any file was created, commit:
    ```bash
-   git add docs/workflow/
+   git add ${projectDir}/docs/workflow/
    git commit -m "chore(workflow): initialise docs/workflow"
    ```
-   If nothing changed, skip the commit and print: `docs/workflow/ already initialised.`
+   If nothing changed, skip the commit and print: `${projectDir}/docs/workflow/ already initialised.`
 
 6. Print:
    ```
-   docs/workflow/ ready.
+   ${projectDir}/docs/workflow/ ready.
 
    Next:
      /($)i-wf feature <description>   — intake your first feature

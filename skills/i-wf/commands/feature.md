@@ -71,30 +71,32 @@ Intake a new feature: collect all requirements, decompose into chunks, scaffold 
 
 7. **On explicit in-chat approval**, generate feature ID: `YYYY-MM-DD-<short-slug>`. Do not treat `/($)i-wf advance` as approval here; `advance` is stage-only.
 
-8. **Create feature branch** from `main`:
-   - `bug` type → `hotfix/<feature-id>`
-   - all other types → `wf/<feature-id>`
+8. **Ensure `preproduction` is up to date** with `main` (create from `main` if absent).
 
-9. **Ensure `preproduction` is up to date** with `main` (create from `main` if absent).
+9. **Create feature branch and worktree** from `main`:
+   - `bug` type: `git worktree add -b hotfix/<feature-id> ${projectDir}/.worktrees/<feature-id> main`
+   - all other types: `git worktree add -b wf/<feature-id> ${projectDir}/.worktrees/<feature-id> main`
+   - Append `.worktrees/` to `${projectDir}/.gitignore` if the line is not already present.
+   - **All operations from this point forward execute from inside `${projectDir}/.worktrees/<feature-id>/`.**
 
 10. **Scaffold feature folder** from templates (copy and fill placeholders):
-    - `docs/workflow/features/<feature-id>/feature.md`
-    - `docs/workflow/features/<feature-id>/INDEX.md`
-    - `docs/workflow/features/<feature-id>/chunks.md`
-    - `docs/workflow/features/<feature-id>/log.md`
-    - `docs/workflow/features/<feature-id>/screenshots/` (empty folder with `.gitkeep`)
+    - `${projectDir}/docs/workflow/features/<feature-id>/feature.md`
+    - `${projectDir}/docs/workflow/features/<feature-id>/INDEX.md`
+    - `${projectDir}/docs/workflow/features/<feature-id>/chunks.md`
+    - `${projectDir}/docs/workflow/features/<feature-id>/log.md`
+    - `${projectDir}/docs/workflow/features/<feature-id>/screenshots/` (empty folder with `.gitkeep`)
 
-11. **Update `docs/workflow/INDEX.md`** — add a row under Active features.
+11. **Update `${projectDir}/docs/workflow/INDEX.md`** — add a row under Active features.
 
 12. **Commit scaffold on the feature branch.** Stage the workflow docs plus any files the user explicitly referenced or attached during intake (prototypes, mockups, screenshots, reference designs, etc.). Identify these by scanning the intake conversation for file paths or attachments the user mentioned.
 
     ```bash
-    git add docs/workflow/
+    git add ${projectDir}/docs/workflow/
     git add <file1> <file2> ...   # only files explicitly provided by the user during intake
     git commit -m "chore(workflow): scaffold feature <feature-id>"
     ```
 
-    Do NOT use `git add -A` or `git add .` — only add `docs/workflow/` and the specific files the user provided. If no extra files were provided, omit the second `git add` line.
+    Do NOT use `git add -A` or `git add .` — only add `${projectDir}/docs/workflow/` and the specific files the user provided. If no extra files were provided, omit the second `git add` line.
 
 13. **Print:**
     ```

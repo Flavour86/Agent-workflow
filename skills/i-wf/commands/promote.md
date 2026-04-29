@@ -6,12 +6,12 @@ Merges `preproduction` → `main`, triggers CI/CD deploy, verifies live app, tag
 
 ## Preconditions (hard stop if any fail)
 
-- `<feature-id>` exists in `docs/workflow/features/`
+- `<feature-id>` exists in `${projectDir}/docs/workflow/features/`
 - All chunks show `Done` or `Awaiting-Promote`
 - `preproduction` branch exists and is pushed
-- `.env.deploy.local` exists
+- `${projectDir}/.env.deploy.local` exists
 - `deployment-status-check` skill available — hard stop if missing
-- `user.json` exists at project root — required for MCP authentication. If missing or there is no user's account in the file when any chrome-devtools MCP call is about to be made, **hard stop immediately** and ask the user:
+- `${projectDir}/user.json` exists at project root — required for MCP authentication. If missing or there is no user's account in the file when any chrome-devtools MCP call is about to be made, **hard stop immediately** and ask the user:
   ```
   authentication info not found at project root. MCP authentication cannot proceed.
   ```
@@ -37,19 +37,21 @@ Merges `preproduction` → `main`, triggers CI/CD deploy, verifies live app, tag
 6. **Smoke check** — all three must pass. If any fails: hard stop, fix-forward only.
    a. Before navigating: verify whether authentication info exists at project root — hard stop if missing (see Preconditions). Navigate to every route touched by this feature via chrome-devtools MCP
    b. Verify each route: HTTP 200, zero console errors, zero failed network requests
-   c. Screenshot each route and visually compare against `docs/workflow/design/pages/` mockups
+   c. Screenshot each route and visually compare against `${projectDir}/docs/workflow/design/pages/` mockups
 
 7. Tag: `git tag feature/<feature-id>-done && git push origin --tags`
 
-8. Delete all `wf/<feature-id>/*` and `hotfix/<feature-id>/*` branches locally and remotely.
+8. Remove the worktree and delete the feature branch:
+   - `git worktree remove ${projectDir}/.worktrees/<feature-id> --force`
+   - Delete `wf/<feature-id>` (or `hotfix/<feature-id>`) locally and remotely.
 
-9. Move `docs/workflow/features/<feature-id>/` → `docs/workflow/archive/<YYYY-QQ>/<feature-id>/`
+9. Move `${projectDir}/docs/workflow/features/<feature-id>/` → `${projectDir}/docs/workflow/archive/<YYYY-QQ>/<feature-id>/`
 
-10. Remove feature row from `docs/workflow/INDEX.md`.
+10. Remove feature row from `${projectDir}/docs/workflow/INDEX.md`.
 
 11. `git add -A && git commit -m "archive: <feature-id>" && git push origin main`
 
-12. Run `graphify update .` if `graphify-out/` exists.
+12. Run `graphify update .` if `${projectDir}/graphify-out/` exists.
 
 13. Print handoff with feature ID, commit SHA, tag, live URL, and archive path.
 

@@ -8,38 +8,23 @@ Merges the chunk into the feature branch, runs the full test suite, reviews code
 
 ## Steps
 
-1. Preflight: QA gate passed, working tree clean, on chunk branch.
+1. Preflight: QA gate passed, working tree clean. You are already on the feature branch inside `${projectDir}/.worktrees/<feature-id>/`.
 
-2. ** Invoke `code-review` skill ** on the chunk branch. If blocking findings: hard stop with a plain-text message listing the findings. Wait for `/($)i-wf reject <note>` before proceeding.
+2. **Invoke `code-review` skill** on the feature branch (current chunk's commits). If blocking findings: hard stop with a plain-text message listing the findings. Wait for `/($)i-wf reject <note>` before proceeding.
 
-3. **Architecture review** (see below). Fix all violations in-place before merging.
+3. **Architecture review** (see below). Fix all violations in-place before proceeding.
 
-4. Fetch and check out the feature branch (`wf/<feature-id>` or `hotfix/<feature-id>`).
+4. **Run full test suite on the feature branch** (see below). Fix failures in-place.
 
-5. Rebase chunk branch onto the feature branch:
-   ```bash
-   git rebase wf/<feature-id>
-   ```
-   If conflict: hard stop. Print conflicting files. Never auto-resolve.
+5. Push the feature branch to origin.
 
-6. Merge the rebased chunk branch into the feature branch:
-   ```bash
-   git merge --no-ff wf/<feature-id>/<NN>
-   ```
+6. In `${projectDir}/docs/workflow/features/<feature-id>/chunks.md`: collapse this chunk's section to a one-line summary + link to log entry.
 
-7. **Run full test suite on the feature branch** (see below). Fix failures in-place.
+7. Update `${projectDir}/docs/workflow/features/<feature-id>/INDEX.md`: chunk stage → `Done`.
 
-8. Push the feature branch to origin.
+8. Append to `${projectDir}/docs/workflow/features/<feature-id>/log.md`: integrate complete, architecture decision, commit hash.
 
-9. Delete the chunk branch locally and remotely.
-
-10. In `chunks.md`: collapse this chunk's section to a one-line summary + link to log entry.
-
-11. Update `INDEX.md`: chunk stage → `Done`.
-
-12. Append to `log.md`: integrate complete, architecture decision, commit hash.
-
-13. **If this is the last chunk in the feature:**
+9. **If this is the last chunk in the feature:**
     a. Fetch/create `preproduction` from `main` if absent
     b. Rebase feature branch onto `preproduction`:
        ```bash
@@ -52,11 +37,11 @@ Merges the chunk into the feature branch, runs the full test suite, reviews code
        ```
     d. Run full test suite on `preproduction`. Fix in-place.
     e. Push `preproduction` to origin.
-    f. Update `INDEX.md`: feature status → `Awaiting-Promote`.
+    f. Update `${projectDir}/docs/workflow/features/<feature-id>/INDEX.md`: feature status → `Awaiting-Promote`.
 
-14. Check gate checklist(below), if gate check failed, hard stop and do the Rejection(below) step, otherwise must show handoff block unless the `-a` flag at the end command when all gate checks pass.
+10. Check gate checklist(below), if gate check failed, hard stop and do the Rejection(below) step, otherwise must show handoff block unless the `-a` flag at the end command when all gate checks pass.
 
-15. After user approve the handsoff,
+11. After user approve the handsoff,
 if current chunk is last chunk of the feature print :`Next action: /($)i-wf run <feature-id>` 
 else print: `/($)i-wf promote <feature-id>` at Awaiting-Promote.
 
@@ -86,13 +71,10 @@ If any test fails: fix the code in-place within the Integrate stage, commit, re-
 ## Gate checklist
 
 - [x] `code-review` skill checking passed — no blocking findings
-- [x] All file placement violations fixed before merge
-- [x] Rebase onto feature branch clean
-- [x] Merge into feature branch successful
-- [x] Full unit + E2E + type-check + lint green on feature branch. Beside, must be zero warnings for touched files.
+- [x] All file placement violations fixed before proceeding
+- [x] Full unit + E2E + type-check + lint green on feature branch. Must be zero warnings for touched files.
 - [x] If last chunk: feature branch rebased and merged into `preproduction` cleanly, and push
-- [x] Chunk branch deleted locally and remotely
-- [x] `chunks.md`, `INDEX.md`, `log.md` updated
+- [x] `${projectDir}/docs/workflow/features/<feature-id>/chunks.md`, `INDEX.md`, `log.md` updated
 
 ## Rejection path
 

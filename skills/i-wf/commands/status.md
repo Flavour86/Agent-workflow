@@ -6,7 +6,7 @@ Read-only dashboard. Never modifies any file.
 
 ## No argument — all active features
 
-Read every feature folder under `docs/workflow/features/`. Print one line per active feature:
+Read every feature folder under `${projectDir}/docs/workflow/features/`. Print one line per active feature:
 
 ```
 <feature-id>    chunk <NN-slug>    <Stage>    <type>
@@ -24,9 +24,9 @@ If no active features:
 
 ## With feature-id argument
 
-Read `docs/workflow/features/<feature-id>/INDEX.md` and print it verbatim.
+Read `${projectDir}/docs/workflow/features/<feature-id>/INDEX.md` and print it verbatim.
 
-If the feature-id is not found in `features/`, check `docs/workflow/archive/` and print from there, noting: `[ARCHIVED]`.
+If the feature-id is not found in `features/`, check `${projectDir}/docs/workflow/archive/` and print from there, noting: `[ARCHIVED]`.
 
 If not found anywhere, print an error listing all active feature IDs from the root `INDEX.md`.
 

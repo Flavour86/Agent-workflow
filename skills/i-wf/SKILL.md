@@ -9,14 +9,22 @@ disable-model-invocation: true
 
 You orchestrate feature development through incremental, human-gated stages. Every execution is user-initiated — you never invoke yourself or trigger subcommands on the user's behalf.
 
+## Core concepts
+- **Feature** — a unit of work decomposed into sequential chunks. ID format: `YYYY-MM-DD-<slug>`.
+- **Chunk** — a vertical slice (frontend + backend + API + DB as needed). Strictly sequential. ID: `<feature-id>/<NN-slug>`.
+- **Stage** — each chunk declares only the stages it needs: `design → code → qa → integrate`. Not all stages are required for every chunk.
+- **Stage enum:** `Pending | Design | Code | QA | Integrate | Awaiting-Promote | Done | Blocked | Rejected`
+- `promote` and `bootstrap` are feature-level commands, not per-chunk stages.
+- **projectDir**: root of the project's codebase.
+
 ## Anti-patterns — check these first
 
 **1. Never run without prerequisites.**
 
 | Subcommand | Requires |
 |---|---|
-| Any except `init` and `bootstrap` | `docs/workflow/` exists → if not: `Workflow not initialised. Run /($)i-wf init first.` |
-| `run`, `advance`, `block`, `reject`, `promote` | Active feature in `docs/workflow/INDEX.md` → if not: `No active feature. Run /($)i-wf feature <description> to start one.` |
+| Any except `init` and `bootstrap` | `${projectDir}/docs/workflow/` exists → if not: `Workflow not initialised. Run /($)i-wf init first.` |
+| `run`, `advance`, `block`, `reject`, `promote` | Active feature in `${projectDir}/docs/workflow/INDEX.md` → if not: `No active feature. Run /($)i-wf feature <description> to start one.` |
 | `run`, `advance`, `block`, `reject` | Chunk currently in progress → if not: `No chunk in progress. Check /($)i-wf status.` |
 
 **2. Never invoke implicitly.** Only execute when the user explicitly types `/i-wf` or `$i-wf`.
@@ -55,33 +63,23 @@ Usage: /($)i-wf <subcommand> [args]
   bootstrap                   — one-shot deploy pipeline setup
 ```
 
-## Core concepts
-
-- **Feature** — a unit of work decomposed into sequential chunks. ID format: `YYYY-MM-DD-<slug>`.
-- **Chunk** — a vertical slice (frontend + backend + API + DB as needed). Strictly sequential. ID: `<feature-id>/<NN-slug>`.
-- **Stage** — each chunk declares only the stages it needs: `design → code → qa → integrate`. Not all stages are required for every chunk.
-- **Stage enum:** `Pending | Design | Code | QA | Integrate | Awaiting-Promote | Done | Blocked | Rejected`
-- `promote` and `bootstrap` are feature-level commands, not per-chunk stages.
-
 ## Git branching model
 
 ```
 main
- └── wf/<feature-id>            ← feature/refactor/optimization, created at /i-wf feature
- └── hotfix/<feature-id>        ← bug type, created at /i-wf feature
-      └── <prefix>/<feature-id>/<NN>   ← chunk branch, from feature branch
-           ↓ integrate: chunk → feature branch
-      <prefix>/<feature-id>     ← all chunks merge here
-           ↓ last chunk: feature branch → preproduction
+ └── wf/<feature-id>            ← feature/refactor/optimization; worktree at ${projectDir}/.worktrees/<feature-id>/
+ └── hotfix/<feature-id>        ← bug type; worktree at ${projectDir}/.worktrees/<feature-id>/
+      ↓ chunks commit directly here (no chunk branches)
+      ↓ last chunk integrate → feature branch → preproduction
  └── preproduction              ← created from main if absent
            ↓ /i-wf promote
  └── main
 ```
 
-| Feature type | Feature branch | Chunk branches |
+| Feature type | Feature branch | Worktree path |
 |---|---|---|
-| `feature / refactor / optimization` | `wf/<feature-id>` | `wf/<feature-id>/<NN>` |
-| `bug` | `hotfix/<feature-id>` | `hotfix/<feature-id>/<NN>` |
+| `feature / refactor / optimization` | `wf/<feature-id>` | `${projectDir}/.worktrees/<feature-id>/` |
+| `bug` | `hotfix/<feature-id>` | `${projectDir}/.worktrees/<feature-id>/` |
 
 ## Handoff block
 
