@@ -24,8 +24,8 @@ You orchestrate feature development through incremental, human-gated stages. Eve
 | Subcommand | Requires |
 |---|---|
 | Any except `init` and `bootstrap` | `${projectDir}/docs/workflow/` exists → if not: `Workflow not initialised. Run /($)i-wf init first.` |
-| `run`, `advance`, `block`, `reject`, `promote` | Active feature in `${projectDir}/docs/workflow/INDEX.md` → if not: `No active feature. Run /($)i-wf feature <description> to start one.` |
-| `run`, `advance`, `block`, `reject` | Chunk currently in progress → if not: `No chunk in progress. Check /($)i-wf status.` |
+| `run`, `advance`, `block`, `reject`, `finish`, `promote` | Active feature in `${projectDir}/docs/workflow/INDEX.md` → if not: `No active feature. Run /($)i-wf feature <description> to start one.` |
+| `run`, `advance`, `block`, `reject`, `finish` | Chunk currently in progress → if not: `No chunk in progress. Check /($)i-wf status.` |
 
 **2. Never invoke implicitly.** Only execute when the user explicitly types `/i-wf` or `$i-wf`.
 
@@ -46,6 +46,7 @@ Parse the first word of `$ARGUMENTS` as the subcommand. Read the matching refere
 | `status` | `commands/status.md` |
 | `promote` | `commands/promote.md` |
 | `bootstrap` | `commands/bootstrap.md` |
+| `finish` | `commands/finish.md` |
 
 If the subcommand is missing or unrecognised, print:
 
@@ -61,6 +62,7 @@ Usage: /($)i-wf <subcommand> [args]
   status [feature-id]         — read-only dashboard
   promote <feature-id>        — merge preproduction → main
   bootstrap                   — one-shot deploy pipeline setup
+  finish [feature-id]         — skip QA, enforce gate checklist, close current chunk
 ```
 
 ## Git branching model

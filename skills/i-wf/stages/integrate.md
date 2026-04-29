@@ -10,7 +10,7 @@ Merges the chunk into the feature branch, runs the full test suite, reviews code
 
 1. Preflight: QA gate passed, working tree clean. You are already on the feature branch inside `${projectDir}/.worktrees/<feature-id>/`.
 
-2. **Invoke `code-review` skill** on the feature branch (current chunk's commits). If blocking findings: hard stop with a plain-text message listing the findings. Wait for `/($)i-wf reject <note>` before proceeding.
+2. **Invoke `code-review` skill** on the feature branch (current chunk's commits). If blocking findings: fix them in-place, commit, re-run `code-review`. Iterate until no blocking findings. Never stop or ask the user.
 
 3. **Architecture review** (see below). Fix all violations in-place before proceeding.
 
@@ -39,7 +39,7 @@ Merges the chunk into the feature branch, runs the full test suite, reviews code
     e. Push `preproduction` to origin.
     f. Update `${projectDir}/docs/workflow/features/<feature-id>/INDEX.md`: feature status → `Awaiting-Promote`.
 
-10. Check gate checklist(below), if gate check failed, hard stop and do the Rejection(below) step, otherwise must show handoff block unless the `-a` flag at the end command when all gate checks pass.
+10. Check gate checklist (below). If any item fails: fix in-place, commit, re-check. Iterate until all items pass. Never stop or ask the user. Show handoff block only when all gate checks pass (unless `-a` flag).
 
 11. After user approve the handsoff,
 if current chunk is last chunk of the feature print :`Next action: /($)i-wf run <feature-id>` 
@@ -78,4 +78,4 @@ If any test fails: fix the code in-place within the Integrate stage, commit, re-
 
 ## Rejection path
 
-Rare — the merge is already done. If `reject` is used, the user must specify: revert the merge or leave in place and create a follow-up chunk. Never auto-revert.
+There is no rejection path for Integrate. All gate failures are fixed in-place within this stage — fix, commit, re-check, iterate until passing. If the user explicitly runs `/($)i-wf reject` after integrate, ask whether to revert the last commits or create a follow-up chunk. Never auto-revert.
