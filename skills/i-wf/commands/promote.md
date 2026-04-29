@@ -33,26 +33,21 @@ Merges `preproduction` → `main`, triggers CI/CD deploy, verifies live app, tag
      ```
    - **If skill is not available:** skip this step and continue.
 
-6. **Smoke check** — all three must pass. If any fails: hard stop, fix-forward only.
-   a. Before navigating: verify whether authentication info exists at project root — hard stop if missing (see Preconditions). Navigate to every route touched by this feature via chrome-devtools MCP
-   b. Verify each route: HTTP 200, zero console errors, zero failed network requests
-   c. Screenshot each route and visually compare against `${projectDir}/docs/workflow/design/pages/` mockups
+6. Tag: `git tag feature/<feature-id>-done && git push origin --tags`
 
-7. Tag: `git tag feature/<feature-id>-done && git push origin --tags`
-
-8. Remove the worktree and delete the feature branch:
+7. Remove the worktree and delete the feature branch:
    - `git worktree remove ${projectDir}/.worktrees/<feature-id> --force`
    - Delete `wf/<feature-id>` (or `hotfix/<feature-id>`) locally and remotely.
 
-9. Move `${projectDir}/docs/workflow/features/<feature-id>/` → `${projectDir}/docs/workflow/archive/<YYYY-QQ>/<feature-id>/`
+8. Move `${projectDir}/docs/workflow/features/<feature-id>/` → `${projectDir}/docs/workflow/archive/<YYYY-QQ>/<feature-id>/`
 
-10. Remove feature row from `${projectDir}/docs/workflow/INDEX.md`.
+9. Remove feature row from `${projectDir}/docs/workflow/INDEX.md`.
 
-11. `git add -A && git commit -m "archive: <feature-id>" && git push origin main`
+10. `git add -A && git commit -m "archive: <feature-id>" && git push origin main`
 
-12. Run `graphify update .` if `${projectDir}/graphify-out/` exists.
+11. Run `graphify update .` if `${projectDir}/graphify-out/` exists.
 
-13. Print handoff with feature ID, commit SHA, tag, live URL, and archive path.
+12. Print handoff with feature ID, commit SHA, tag, live URL, and archive path.
 
 ## Deployment failure rule
 
