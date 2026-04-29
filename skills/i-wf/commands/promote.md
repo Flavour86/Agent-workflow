@@ -9,8 +9,6 @@ Merges `preproduction` → `main`, triggers CI/CD deploy, verifies live app, tag
 - `<feature-id>` exists in `${projectDir}/docs/workflow/features/`
 - All chunks show `Done` or `Awaiting-Promote`
 - `preproduction` branch exists and is pushed
-- `${projectDir}/.env.deploy.local` exists
-- `deployment-status-check` skill available — hard stop if missing
 - `${projectDir}/user.json` exists at project root — required for MCP authentication. If missing or there is no user's account in the file when any chrome-devtools MCP call is about to be made, **hard stop immediately** and ask the user:
   ```
   authentication info not found at project root. MCP authentication cannot proceed.
@@ -27,12 +25,13 @@ Merges `preproduction` → `main`, triggers CI/CD deploy, verifies live app, tag
 
 4. `git push origin main`
 
-5. Invoke `deployment-status-check` skill. Wait for CI/CD to complete.
+5. **If `deployment-status-check` skill is available:** invoke it and wait for CI/CD to complete.
    - **If deployment fails:** hard stop. Never revert. Instruct the user:
      ```
      Deploy failed. Fix forward:
      /($)i-wf feature <fix description> --type bug
      ```
+   - **If skill is not available:** skip this step and continue.
 
 6. **Smoke check** — all three must pass. If any fails: hard stop, fix-forward only.
    a. Before navigating: verify whether authentication info exists at project root — hard stop if missing (see Preconditions). Navigate to every route touched by this feature via chrome-devtools MCP
